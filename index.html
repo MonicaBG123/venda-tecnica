@@ -1,0 +1,1974 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+#vt-root, #vt-root * { box-sizing: border-box; }
+#vt-root {
+  --ink:#1B2A41; --ink-2:#516176; --paper:#FFFEFA; --paper-2:#F2ECDB;
+  --mustard:#E2AC1F; --mustard-dark:#A87A0C; --teal:#2F8F82; --rust:#C1502E; --sage:#3F8452;
+  --line: rgba(27,42,65,.13);
+  --shadow: rgba(31,49,74,.12);
+  font-family:'IBM Plex Sans',sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1100px 480px at 12% -8%, rgba(226,172,31,.16), transparent 58%),
+    radial-gradient(900px 520px at 100% 0%, rgba(47,143,130,.16), transparent 55%),
+    #EEF5F0;
+  min-height:100vh;
+  padding: 28px 14px 60px;
+  position:relative;
+}
+#vt-root h1,#vt-root h2,#vt-root h3{ font-family:'Roboto Slab',serif; margin:0; }
+#vt-root p{ margin:0; }
+#vt-root button{ font-family:inherit; cursor:pointer; border:none; }
+#vt-root input{ font-family:inherit; }
+#vt-root :focus-visible{ outline:3px solid var(--mustard); outline-offset:2px; }
+@media (prefers-reduced-motion: reduce){ #vt-root *{ animation:none !important; transition:none !important; } }
+
+.vt-toastroot{ position:fixed; top:14px; right:14px; z-index:999; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+.vt-toast{ background:var(--ink); color:var(--paper); font-family:'Roboto Slab',serif; font-weight:600; padding:10px 16px; border-radius:5px; border:1px solid var(--mustard); box-shadow:0 10px 24px rgba(27,42,65,.28); animation: vtIn .25s ease-out, vtOut .4s ease-in 1.4s forwards; }
+@keyframes vtIn{ from{ transform:translateY(-8px); opacity:0;} to{ transform:translateY(0); opacity:1;} }
+@keyframes vtOut{ to{ transform:translateY(-8px); opacity:0;} }
+
+/* ---------- Login screen ---------- */
+.vt-loginwrap{ max-width:440px; margin:6vh auto; }
+.vt-loginwrap .vt-kicker{ color:var(--mustard-dark); font-size:13px; letter-spacing:.02em; margin-bottom:6px; font-weight:600; }
+.vt-loginwrap h1{ color:var(--ink); font-size:30px; line-height:1.15; margin-bottom:6px; }
+.vt-loginwrap .vt-sub{ color:var(--ink-2); font-size:15px; margin-bottom:22px; }
+.vt-card{ background:var(--paper); border-radius:6px; padding:26px 24px; box-shadow:0 18px 38px var(--shadow); position:relative; border:1px solid rgba(27,42,65,.06); }
+.vt-ladder{ display:flex; align-items:center; gap:6px; overflow-x:auto; margin:16px 0 24px; padding-bottom:4px; }
+.vt-ladder-item{ flex:0 0 auto; font-size:11.5px; font-weight:600; color:var(--ink-2); border:1px solid var(--line); padding:5px 11px; border-radius:20px; white-space:nowrap; background:rgba(255,255,255,.5); }
+.vt-ladder-item.vt-start{ color:var(--ink); background:var(--mustard); border-color:var(--mustard); }
+.vt-ladder-arrow{ color:rgba(27,42,65,.3); font-size:13px; flex:0 0 auto; }
+.vt-ladder-light .vt-ladder-item{ color:var(--ink-2); border-color:var(--line); }
+.vt-ladder-light .vt-ladder-arrow{ color:var(--line); }
+.vt-stamp{ position:absolute; top:-16px; right:20px; background:var(--paper); border:2px dashed var(--rust); color:var(--rust); font-weight:700; font-size:11px; padding:6px 12px; border-radius:4px; transform:rotate(6deg); box-shadow:0 6px 14px var(--shadow); }
+.vt-field{ margin-bottom:16px; }
+.vt-field label{ display:block; font-size:13px; font-weight:600; margin-bottom:5px; color:var(--ink-2); }
+.vt-field input{ width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:4px; font-size:15px; background:#fff; }
+.vt-field input:focus{ border-color:var(--teal); }
+.vt-error{ background:rgba(193,80,46,.1); border:1px solid var(--rust); color:#8a3820; padding:9px 11px; border-radius:4px; font-size:13.5px; margin-bottom:14px; }
+.vt-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 18px; border-radius:4px; font-weight:600; font-size:14.5px; transition:transform .12s ease, filter .12s ease; }
+.vt-btn:hover{ filter:brightness(1.06); }
+.vt-btn:active{ transform:translateY(1px); }
+.vt-btn-primary{ background:var(--mustard); color:var(--ink); width:100%; }
+.vt-btn-ghost{ background:transparent; color:var(--teal); border:1.5px solid var(--teal); }
+.vt-switchline{ text-align:center; margin-top:16px; font-size:13.5px; color:var(--ink-2); }
+.vt-switchline button{ background:none; color:var(--teal); font-weight:600; text-decoration:underline; }
+.vt-teacherlink{ display:block; text-align:center; margin-top:22px; color:var(--ink-2); font-size:12.5px; background:none; }
+.vt-teacherlink:hover{ color:var(--mustard-dark); }
+
+/* ---------- App chrome (logged in) ---------- */
+.vt-shell{ max-width:960px; margin:0 auto; }
+.vt-topbar{ background:var(--paper); border-radius:6px; padding:18px 20px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; box-shadow:0 14px 32px var(--shadow); }
+.vt-idblock{ display:flex; align-items:center; gap:14px; }
+.vt-avatar{ width:52px; height:52px; border-radius:4px; background:var(--ink); color:var(--paper); display:flex; align-items:center; justify-content:center; font-family:'Roboto Slab',serif; font-weight:700; font-size:19px; flex-shrink:0; }
+.vt-idtext .vt-name{ font-family:'Roboto Slab',serif; font-weight:700; font-size:17px; }
+.vt-idtext .vt-meta{ font-size:12.5px; color:var(--ink-2); margin-top:2px; }
+.vt-idtext .vt-empno{ font-variant-numeric: tabular-nums; letter-spacing:.03em; }
+.vt-paybox{ text-align:right; }
+.vt-paybox .vt-paylabel{ font-size:11.5px; color:var(--ink-2); text-transform:none; }
+.vt-paybox .vt-payfig{ font-family:'Roboto Slab',serif; font-weight:700; font-size:26px; color:var(--teal); }
+.vt-level{ display:inline-block; margin-top:2px; font-size:12px; font-weight:600; background:var(--mustard); color:var(--ink); padding:2px 9px; border-radius:3px; }
+
+.vt-progresswrap{ max-width:960px; margin:10px auto 0; background:var(--paper); border-radius:6px; padding:10px 20px 14px; box-shadow:0 8px 20px var(--shadow); }
+.vt-progresstop{ display:flex; justify-content:space-between; font-size:12px; color:var(--ink-2); margin-bottom:6px; }
+.vt-track{ height:8px; background:var(--paper-2); border-radius:5px; overflow:hidden; }
+.vt-fill{ height:100%; background:linear-gradient(90deg,var(--teal),var(--mustard)); transition:width .5s ease; }
+
+.vt-nav{ display:flex; gap:8px; overflow-x:auto; margin:16px auto 0; max-width:960px; padding-bottom:2px; }
+.vt-navbtn{ flex:0 0 auto; background:var(--paper-2); color:var(--ink-2); padding:9px 15px; border-radius:5px 5px 0 0; font-weight:600; font-size:13.5px; border-bottom:3px solid transparent; }
+.vt-navbtn.active{ background:var(--paper); color:var(--ink); border-bottom:3px solid var(--mustard); }
+
+.vt-content{ background:var(--paper); border-radius:0 6px 6px 6px; padding:24px; margin-top:0; box-shadow:0 14px 32px var(--shadow); min-height:340px; }
+
+/* dashboard task cards */
+.vt-taskgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:6px; }
+@media (max-width:640px){ .vt-taskgrid{ grid-template-columns:1fr; } }
+.vt-task{ background:#fff; border:1px solid var(--line); border-left:5px solid var(--mustard); border-radius:4px; padding:16px 16px 14px; text-align:left; display:flex; flex-direction:column; gap:6px; }
+.vt-task.vt-c-teal{ border-left-color:var(--teal); }
+.vt-task.vt-c-sage{ border-left-color:var(--sage); }
+.vt-task.vt-c-rust{ border-left-color:var(--rust); }
+.vt-task h3{ font-size:16.5px; }
+.vt-task p{ font-size:13px; color:var(--ink-2); }
+.vt-task .vt-taskstatus{ font-size:12.5px; font-weight:600; margin-top:auto; padding-top:6px; }
+.vt-task .vt-go{ align-self:flex-start; margin-top:8px; background:var(--ink); color:var(--paper); padding:8px 14px; border-radius:4px; font-size:13px; font-weight:600; }
+
+/* quiz / cases */
+.vt-qhead{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px; }
+.vt-qhead .vt-qcount{ font-size:12.5px; color:var(--ink-2); font-weight:600; }
+.vt-qtext{ font-size:17.5px; line-height:1.5; margin-bottom:16px; font-weight:600; background:rgba(226,172,31,.16); border-left:5px solid var(--mustard); border-radius:6px; padding:16px 18px; color:var(--ink); }
+.vt-optsbox{ background:rgba(47,143,130,.07); border-radius:6px; padding:14px; margin-bottom:6px; }
+.vt-opts{ display:flex; flex-direction:column; gap:10px; }
+.vt-videolink{ display:inline-flex; align-items:center; gap:8px; background:#3D6FA8; color:#fff; padding:12px 18px; border-radius:6px; font-weight:700; font-size:14px; text-decoration:none; }
+.vt-videolink:hover{ filter:brightness(1.08); }
+
+/* memory game */
+.vt-mem-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:8px; margin-bottom:6px; }
+.vt-mem-card{ min-height:78px; background:var(--ink); color:transparent; border:none; border-radius:6px; padding:8px; font-size:12px; line-height:1.35; text-align:center; display:flex; align-items:center; justify-content:center; }
+.vt-mem-card:not(:disabled):hover{ filter:brightness(1.15); }
+.vt-mem-card.vt-flipped{ background:#fff; color:var(--ink); border:1.5px solid var(--teal); }
+.vt-mem-card.vt-matched{ background:rgba(63,132,82,.14); color:var(--ink); border:1.5px solid var(--sage); }
+
+/* offer builder */
+.vt-offer-sel{ border-color:var(--teal) !important; background:rgba(47,143,130,.1) !important; }
+.vt-opt.vt-missed{ border-color:var(--mustard) !important; background:rgba(226,172,31,.14) !important; }
+
+/* badges */
+.vt-badgegrid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; }
+.vt-badge{ background:#fff; border:1px solid var(--line); border-radius:6px; padding:14px; text-align:center; opacity:.5; }
+.vt-badge.vt-badge-unlocked{ opacity:1; border-color:var(--mustard); background:rgba(226,172,31,.08); }
+.vt-badge-icon{ font-size:28px; margin-bottom:6px; }
+.vt-badge-title{ font-weight:700; font-size:13.5px; margin-bottom:4px; }
+.vt-badge-desc{ font-size:11.5px; color:var(--ink-2); line-height:1.4; margin-bottom:6px; }
+.vt-badge-status{ font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-2); }
+.vt-badge.vt-badge-unlocked .vt-badge-status{ color:var(--mustard-dark); }
+
+/* roulette */
+.vt-wheel{ width:130px; height:130px; border-radius:50%; margin:14px auto 0; border:4px solid var(--ink);
+  background:conic-gradient(var(--mustard) 0deg 60deg, var(--teal) 60deg 120deg, var(--sage) 120deg 180deg, var(--rust) 180deg 240deg, #7B5CA6 240deg 300deg, #3D6FA8 300deg 360deg); }
+.vt-wheel-spinning{ animation: vtWheelSpin 1.1s cubic-bezier(.2,.7,.3,1) forwards; }
+@keyframes vtWheelSpin{ from{ transform:rotate(0deg); } to{ transform:rotate(1080deg); } }
+.vt-opt{ text-align:left; background:#fff; border:1.5px solid var(--line); border-radius:5px; padding:12px 14px; font-size:14.5px; }
+.vt-opt:hover:not(:disabled){ border-color:var(--teal); }
+.vt-opt.vt-correct{ border-color:var(--sage); background:rgba(63,110,72,.1); font-weight:600; }
+.vt-opt.vt-wrong{ border-color:var(--rust); background:rgba(193,80,46,.1); }
+.vt-opt:disabled{ cursor:default; opacity:.85; }
+.vt-feedback{ margin-top:16px; padding:12px 14px; border-radius:5px; font-size:13.5px; background:var(--paper-2); }
+.vt-feedback.vt-good{ border-left:4px solid var(--sage); }
+.vt-feedback.vt-bad{ border-left:4px solid var(--rust); }
+.vt-rowend{ margin-top:18px; display:flex; justify-content:space-between; align-items:center; }
+
+/* wordsearch */
+.vt-ws-wrap{ display:flex; gap:22px; flex-wrap:wrap; }
+.vt-ws-grid{ display:grid; gap:3px; user-select:none; }
+.vt-ws-cell{ width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px solid var(--line); font-size:12.5px; font-weight:600; border-radius:2px; color:var(--ink-2); }
+.vt-ws-cell.vt-sel{ background:var(--mustard); color:var(--ink); }
+.vt-ws-cell.vt-found{ background:var(--sage); color:#fff; }
+.vt-ws-list{ list-style:none; padding:0; margin:0; min-width:160px; font-size:14px; }
+.vt-ws-list li{ padding:5px 0; border-bottom:1px dashed var(--line); color:var(--ink-2); }
+.vt-ws-list li.vt-found{ color:var(--sage); text-decoration:line-through; font-weight:600; }
+
+/* speed round */
+.vt-speed-intro{ text-align:center; padding:20px 0; }
+.vt-timer{ font-family:'Roboto Slab',serif; font-size:38px; font-weight:700; color:var(--rust); text-align:center; }
+.vt-tfstatement{ font-size:19px; text-align:center; margin:22px 0 26px; font-weight:500; line-height:1.4; min-height:70px; display:flex; align-items:center; justify-content:center; }
+.vt-tfrow{ display:flex; gap:14px; justify-content:center; }
+.vt-tfbtn{ padding:14px 30px; border-radius:5px; font-size:16px; font-weight:700; color:#fff; }
+.vt-tfbtn.vt-true{ background:var(--sage); }
+.vt-tfbtn.vt-false{ background:var(--rust); }
+.vt-scoreline{ text-align:center; margin-top:14px; font-size:13.5px; color:var(--ink-2); }
+
+/* nomina */
+.vt-table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+.vt-table th{ text-align:left; font-size:12px; color:var(--ink-2); border-bottom:2px solid var(--ink); padding:6px 8px; }
+.vt-table td{ padding:8px; border-bottom:1px solid var(--line); }
+.vt-table td.vt-amt{ text-align:right; font-weight:600; color:var(--teal); white-space:nowrap; }
+.vt-total{ display:flex; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:2px solid var(--ink); font-family:'Roboto Slab',serif; font-weight:700; font-size:17px; }
+
+/* teacher */
+.vt-teacher-note{ background:rgba(214,164,25,.15); border:1px solid var(--mustard); border-radius:5px; padding:10px 13px; font-size:13px; margin-bottom:16px; }
+
+/* RA picker */
+.vt-ragrid{ display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+.vt-racard{ background:#fff; border:1px solid var(--line); border-radius:6px; padding:17px; display:flex; flex-direction:column; gap:7px; }
+.vt-racard.vt-ralocked{ opacity:.65; }
+.vt-ranum{ display:inline-flex; width:32px; height:32px; align-items:center; justify-content:center; background:var(--ink); color:var(--paper); font-family:'Roboto Slab',serif; font-weight:700; border-radius:4px; font-size:13px; }
+.vt-ratitle{ font-size:16px; font-weight:700; font-family:'Roboto Slab',serif; }
+.vt-radesc{ font-size:13px; color:var(--ink-2); line-height:1.5; }
+.vt-rafoot{ margin-top:auto; padding-top:8px; display:flex; align-items:center; justify-content:space-between; }
+.vt-rabtn{ background:var(--mustard); color:var(--ink); padding:8px 16px; border-radius:4px; font-weight:700; font-size:13px; }
+.vt-rasoon{ font-size:11.5px; font-weight:600; color:var(--ink-2); background:var(--paper-2); padding:4px 10px; border-radius:20px; }
+
+/* RA breadcrumb + subnav */
+.vt-crumb{ margin-bottom:10px; }
+.vt-rabanner{ font-size:13px; color:var(--ink-2); margin-bottom:10px; }
+.vt-rabanner strong{ color:var(--ink); }
+
+/* RA hub roadmap */
+.vt-roadmap{ position:relative; padding-left:38px; margin-top:16px; }
+.vt-roadmap::before{ content:''; position:absolute; left:15px; top:8px; bottom:8px; width:2px; background:var(--line); }
+.vt-roadstep{ position:relative; background:#fff; border:1px solid var(--line); border-left-width:5px; border-left-style:solid; border-radius:6px; padding:14px 16px; margin-bottom:14px; }
+.vt-roadstep::before{ content:attr(data-num); position:absolute; left:-38px; top:16px; width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; font-family:'Roboto Slab',serif; }
+.vt-roadstep.vt-roaddone::before{ content:'✓'; background:var(--sage); }
+.vt-roadhead{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; }
+.vt-roadhead h3{ font-size:16px; }
+.vt-roadstatus{ font-size:12px; font-weight:600; white-space:nowrap; }
+.vt-roaddesc{ font-size:13px; color:var(--ink-2); margin:5px 0 10px; }
+
+/* teacher roster chips */
+.vt-namechip{ display:inline-block; background:var(--paper-2); border:1px solid var(--line); padding:5px 13px; border-radius:20px; font-size:13px; font-weight:600; color:var(--ink); }
+.vt-namechip:hover{ background:var(--mustard); border-color:var(--mustard); }
+.vt-rowlink{ background:none; color:var(--teal); font-weight:600; font-size:13.5px; text-decoration:underline; }
+.vt-peekbanner{ background:var(--ink); color:#fff; padding:10px 16px; border-radius:6px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:12px; font-size:13.5px; }
+.vt-peekbanner button{ background:var(--mustard); color:var(--ink); padding:6px 13px; border-radius:4px; font-weight:700; font-size:12.5px; white-space:nowrap; }
+
+/* teacher messaging */
+.vt-msgbtn{ background:var(--paper-2); border:1px solid var(--line); color:var(--ink); padding:5px 11px; border-radius:4px; font-size:12.5px; font-weight:600; white-space:nowrap; }
+.vt-msgbtn:hover{ background:var(--mustard); border-color:var(--mustard); }
+.vt-msgtextarea{ width:100%; padding:12px; border:1.5px solid var(--line); border-radius:5px; font-size:14px; font-family:inherit; resize:vertical; }
+
+/* student-facing messages */
+.vt-msgcard{ background:rgba(123,92,166,.10); border-left:5px solid #7B5CA6; border-radius:6px; padding:14px 16px; margin-bottom:12px; }
+.vt-msgcard .vt-msgtext{ font-size:14.5px; line-height:1.5; margin-bottom:8px; }
+.vt-msgfoot{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:12px; color:var(--ink-2); }
+.vt-msgfoot button{ background:#7B5CA6; color:#fff; padding:5px 12px; border-radius:4px; font-weight:600; font-size:12px; }
+.vt-msgrow{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; padding:12px 14px; border-bottom:1px solid var(--line); }
+.vt-msgrow:last-child{ border-bottom:none; }
+.vt-msgbadge{ display:inline-block; background:#7B5CA6; color:#fff; font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:10px; margin-left:6px; vertical-align:middle; }
+.vt-summarycard{ background:#fff; border:1px solid var(--line); border-radius:5px; padding:16px; margin-bottom:16px; }
+
+/* payslip */
+.vt-payhead{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; background:var(--paper-2); border:1px solid var(--line); border-radius:6px; padding:15px 18px; margin-bottom:18px; }
+.vt-payhead .vt-ph-block strong{ display:block; font-family:'Roboto Slab',serif; font-size:14.5px; color:var(--ink); margin-bottom:5px; }
+.vt-payhead .vt-ph-block div{ font-size:12.5px; color:var(--ink-2); line-height:1.6; }
+.vt-paysection{ font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-2); margin:18px 0 8px; }
+.vt-deductrow{ display:flex; justify-content:space-between; padding:8px 2px; border-top:1px dashed var(--line); font-size:13.5px; color:var(--ink-2); }
+.vt-liquid{ display:flex; justify-content:space-between; align-items:baseline; margin-top:4px; padding:14px 16px; background:var(--ink); border-radius:6px; }
+.vt-liquid span:first-child{ color:rgba(255,255,255,.75); font-size:13px; font-weight:600; }
+.vt-liquid span:last-child{ color:#fff; font-family:'Roboto Slab',serif; font-weight:700; font-size:21px; }
+
+.vt-empty{ text-align:center; padding:40px 10px; color:var(--ink-2); }
+.vt-topline{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.vt-backlink{ background:none; color:var(--teal); font-weight:600; font-size:13.5px; }
+
+/* teoria accordion */
+.vt-bloc-title{ font-size:13px; font-weight:600; color:var(--teal); margin:22px 0 8px; }
+.vt-bloc-title:first-child{ margin-top:0; }
+.vt-accitem{ border:1px solid var(--line); border-radius:4px; margin-bottom:8px; overflow:hidden; }
+.vt-acchead{ width:100%; text-align:left; background:#fff; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:14px; }
+.vt-acchead:hover{ background:var(--paper-2); }
+.vt-accmark{ color:var(--mustard-dark); font-size:13px; }
+.vt-accbody{ padding:4px 14px 14px; font-size:13.5px; line-height:1.6; color:var(--ink-2); background:#fff; }
+.vt-accbody p{ margin-bottom:8px; }
+.vt-accbody p:last-child{ margin-bottom:0; }
+
+/* activitats */
+.vt-actcard{ border:1px solid var(--line); border-left:5px solid var(--teal); border-radius:4px; margin-bottom:10px; background:#fff; overflow:hidden; }
+.vt-acthead{ width:100%; text-align:left; padding:14px 16px; display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+.vt-acthead:hover{ background:var(--paper-2); }
+.vt-actnum{ display:inline-block; background:var(--ink); color:var(--paper); font-family:'Roboto Slab',serif; font-weight:700; font-size:12px; padding:2px 8px; border-radius:3px; margin-bottom:6px; }
+.vt-actbloc{ font-size:11.5px; color:var(--ink-2); }
+.vt-actbody{ padding:0 16px 16px; font-size:13.5px; line-height:1.65; color:var(--ink-2); white-space:pre-line; border-top:1px dashed var(--line); }
+.vt-actbody{ padding-top:12px; }
+</style>
+
+<div id="vt-root">
+  <div class="vt-toastroot" id="vtToastRoot"></div>
+  <div id="vtApp"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var TEACHER_CODE = ""; // el codi real només viu al servidor de Google // La professora pot canviar aquest codi editant aquesta línia.
+  var REGISTRY_KEY = "vt-ra1-registry";
+  // URL del servidor de Google (Apps Script). Si és buida, tot es desa només al navegador.
+  var CLOUD_URL = "https://script.google.com/macros/s/AKfycbwnP8IgdSqQv-jmodrnAMKDdFGwKYGpuLDGk2jdKSp1lE9WxAQQ9HUziv38WJruOUy5/exec";
+
+  var QUIZ = [
+    {q:"Segons la definició del mòdul, què és un producte industrial?", opts:["Un bé o servei comprat per una empresa per incorporar-lo al seu procés o activitat","Qualsevol producte fabricat en una fàbrica","Un producte que només es ven a l'engròs","Un producte que no es pot revendre mai"], correct:0, tip:"Un producte industrial és el que compra una empresa, organització o institució, no un consumidor final."},
+    {q:"Una família compra farina per fer un pastís a casa. En aquest cas, la farina és un producte...", opts:["Industrial","De consum","Institucional","D'intermediari"], correct:1, tip:"Depèn de qui compra i per a què: aquí compra un consumidor final, per tant és producte de consum."},
+    {q:"Quin d'aquests és un exemple de matèria primera?", opts:["Maquinària de producció","Fusta sense transformar","Paper d'oficina","Assessoria legal"], correct:1, tip:"Les matèries primeres són recursos naturals gairebé sense transformar, com la fusta, la llet o els minerals."},
+    {q:"Una fàbrica compra tractors i maquinària que no es consumeixen amb l'ús. A quin tipus de producte industrial correspon?", opts:["Subministraments","Components","Equips de capital","Serveis industrials"], correct:2, tip:"Els equips de capital són màquines i eines que l'empresa fa servir per produir i no es consumeixen amb l'ús."},
+    {q:"Què significa que el mercat industrial té \"demanda derivada\"?", opts:["Que la demanda depèn directament de la demanda del mercat de consum final","Que la demanda sempre puja","Que només compren productes derivats del petroli","Que la demanda no depèn de res extern"], correct:0, tip:"Si baixen les vendes de cotxes, baixa la demanda de rodes: és una demanda derivada."},
+    {q:"Un client compra poca quantitat per revendre-la ràpidament en una botiga. Quin canal utilitza?", opts:["A l'engròs","Institucional","Al detall","Intermediari"], correct:2, tip:"El client al detall compra poca quantitat i decideix ràpid, buscant bon preu de revenda."},
+    {q:"Quin tipus de client ha de fer normalment un concurs públic per comprar?", opts:["Client al detall","Client institucional","Client a l'engròs","Client fabricant"], correct:1, tip:"L'administració, hospitals o grans empreses (clients institucionals) solen requerir concurs públic."},
+    {q:"Quina és la funció principal d'un agent comercial?", opts:["Fabricar el producte","Fer d'intermediari entre l'empresa i el client, cobrant normalment comissió","Emmagatzemar el producte","Fixar els preus de l'empresa"], correct:1, tip:"L'agent comercial fomenta la trobada comprador-venedor i cobra comissió per cada venda aconseguida."},
+    {q:"Quina d'aquestes és una plataforma B2B que connecta proveïdors i compradors industrials?", opts:["Instagram","ThomasNet","Netflix","TripAdvisor"], correct:1, tip:"ThomasNet i Alibaba són plataformes B2B per trobar clients industrials."},
+    {q:"L'envàs, l'embalatge i l'etiquetatge d'un producte són atributs...", opts:["Intrínsecs","Externs","Intangibles","Institucionals"], correct:1, tip:"Els atributs externs són el que es veu i s'identifica des de fora del producte."},
+    {q:"Quin tipus de garantia és obligatòria per llei i sense cost extra?", opts:["Garantia comercial","Garantia de satisfacció","Garantia legal","Garantia estesa"], correct:2, tip:"La garantia legal ve marcada per la llei i tots els fabricants l'han d'oferir sense cost extra."},
+    {q:"Què demostra el marcatge CE en un producte?", opts:["Que el producte és de gamma alta","Que compleix la normativa europea","Que té garantia estesa","Que és fabricat a Suïssa"], correct:1, tip:"El marcatge CE certifica que el producte compleix la normativa europea."},
+    {q:"Un pot de pintura comprat en una ferreteria per pintar l'habitació de casa és un producte...", opts:["De consum","Industrial","Institucional","Un subministrament"], correct:0, tip:"El compra un consumidor final per a ús personal: és producte de consum."},
+    {q:"El mateix pot de pintura, comprat per una fàbrica de mobles per pintar-ne la producció, és un producte...", opts:["De consum","Industrial","Al detall","Cap dels anteriors"], correct:1, tip:"Ara el compra una empresa per incorporar-lo al seu procés de producció: és producte industrial."},
+    {q:"Sabó industrial comprat per un hotel per abastir totes les habitacions es classifica com a...", opts:["Component","Equip de capital","Subministrament","Matèria primera"], correct:2, tip:"És un producte que l'empresa consumeix dia a dia per poder funcionar: un subministrament."},
+    {q:"Guants de protecció per als treballadors d'una fàbrica són un exemple de...", opts:["Component","Subministrament","Equip de capital","Servei industrial"], correct:1, tip:"Es consumeixen en el dia a dia de l'activitat de l'empresa: són subministraments."},
+    {q:"Un motor elèctric que es munta dins d'una rentadora és un exemple de...", opts:["Matèria primera","Component","Servei industrial","Subministrament"], correct:1, tip:"Els components són peces que s'integren dins d'un producte més gran."},
+    {q:"Un servei de neteja industrial contractat per una fàbrica és un exemple de...", opts:["Equip de capital","Component","Servei industrial","Material processat"], correct:2, tip:"És un servei extern que l'empresa necessita per dur a terme la seva activitat."},
+    {q:"Un tractor agrícola que una explotació fa servir per treballar el camp es classifica com...", opts:["Subministrament","Equip de capital","Component","Matèria primera"], correct:1, tip:"És una màquina que l'empresa fa servir per produir i no es consumeix amb l'ús."},
+    {q:"Fusta sense tractar, tal com surt del bosc, es classifica com...", opts:["Material processat","Component","Matèria primera","Subministrament"], correct:2, tip:"Les matèries primeres són recursos naturals gairebé sense transformar."}
+  ];
+
+  var CASES = [
+    {q:"Una fàbrica tèxtil compra cotó a l'engròs per transformar-lo en teixits. Quin tipus de client industrial és, segons qui compra?", opts:["Fabricant","Usuari","Intermediari","Institucional"], correct:0, tip:"Els fabricants compren matèries primeres o components per transformar-los en productes acabats."},
+    {q:"Un hospital compra equips de neteja per fer-los servir directament en la seva activitat diària. Quin tipus de client és?", opts:["Fabricant","Usuari","Intermediari","Al detall"], correct:1, tip:"Els usuaris no transformen el producte: l'utilitzen directament per a la seva activitat."},
+    {q:"Un majorista compra components electrònics per distribuir-los després a diverses botigues. Quin tipus de client és?", opts:["Fabricant","Usuari","Intermediari","Institucional"], correct:2, tip:"Els intermediaris compren per comercialitzar, distribuir o instal·lar, fent de pont amb el client final."},
+    {q:"Una botiga d'esports compra poques unitats d'un producte per revendre'l ràpidament. Quin canal fa servir?", opts:["Al detall","A l'engròs","Institucional","Cap dels anteriors"], correct:0, tip:"El client al detall compra poca quantitat i decideix ràpid."},
+    {q:"Un ajuntament treu un concurs públic per equipar un poliesportiu amb cintes de córrer. Quin canal de compra és?", opts:["Al detall","A l'engròs","Institucional","Intermediari"], correct:2, tip:"L'administració pública sol comprar mitjançant concurs públic: és un client institucional."},
+    {q:"Un client valora que el motor d'una màquina sigui de coure i que compleixi la norma ISO 9001. A quin tipus d'atribut es refereix?", opts:["Atribut intrínsec","Atribut extern","Atribut intangible","Cap dels anteriors"], correct:0, tip:"La composició i la qualitat del producte (materials, normes tècniques) són atributs intrínsecs."},
+    {q:"Un client es fixa en l'etiqueta i en un embalatge resistent per al transport. A quin tipus d'atribut correspon?", opts:["Atribut intrínsec","Atribut extern","Atribut intangible","Cap dels anteriors"], correct:1, tip:"L'envàs, l'embalatge i l'etiquetatge són atributs externs: allò que es veu des de fora."},
+    {q:"Una empresa amplia la garantia legal de 2 a 4 anys sense cost pel client, per diferenciar-se de la competència. Quin tipus de garantia ofereix?", opts:["Garantia legal","Garantia comercial","Garantia de satisfacció","Garantia estesa"], correct:1, tip:"Quan l'empresa afegeix cobertura per sobre de la legal, sense cost, per diferenciar-se, és una garantia comercial."},
+    {q:"Un fabricant de pneumàtics ven més quan puja la producció de cotxes. Quina característica del mercat industrial reflecteix?", opts:["Alts volums","Demanda derivada","Decisions tècniques","Fidelització a llarg termini"], correct:1, tip:"La venda de pneumàtics depèn de la demanda d'un altre producte (els cotxes): és demanda derivada."},
+    {q:"Per aprovar la compra d'una màquina hi han d'intervenir el departament tècnic, el de compres i el de finances. Quina característica del mercat industrial reflecteix?", opts:["Procés de compra complex","Alts volums","Demanda derivada","Fidelització a llarg termini"], correct:0, tip:"Quan intervenen diversos departaments i el procés pot durar setmanes o mesos, parlem d'un procés de compra complex."},
+    {q:"Una empresa tria un proveïdor perquè el seu producte compleix millor les especificacions tècniques, encara que sigui una mica més car. Quina característica reflecteix?", opts:["Decisions tècniques","Alts volums","Procés de compra complex","Demanda derivada"], correct:0, tip:"La decisió es basa en el rendiment tècnic per sobre del preu: són decisions tècniques."},
+    {q:"Una empresa porta 15 anys comprant sempre al mateix proveïdor de components. Quina característica reflecteix?", opts:["Demanda derivada","Alts volums","Fidelització a llarg termini","Decisions tècniques"], correct:2, tip:"Les relacions en el mercat industrial duren anys, no són compres puntuals: és fidelització a llarg termini."},
+    {q:"Un majorista de ferreteria compra eines per revendre-les a botigues petites. Quin tipus de client és?", opts:["Fabricant","Usuari","Intermediari","Institucional"], correct:2, tip:"Compra per comercialitzar i distribuir el producte, fent de pont amb el consumidor final: és un intermediari."},
+    {q:"Un gimnàs compra màquines de musculació perquè els seus socis les facin servir. Quin tipus de client és?", opts:["Fabricant","Usuari","Intermediari","Al detall"], correct:1, tip:"No transforma ni revèn les màquines: les utilitza directament per a la seva activitat, per tant és un usuari."},
+    {q:"Un venedor diu: 'La setmana que ve faré una visita a la vostra fàbrica per resoldre els dubtes que us hagin sorgit i veure si hi ha alguna cosa més en què puguem ajudar-vos.' Quina tècnica de venda hi ha aplicada?", opts:["Escoltar abans de vendre","Deixar-los provar el producte","Tenir paciència i fer seguiment","Convèncer diverses persones alhora"], correct:2, tip:"Fer un seguiment posterior i mantenir-se disponible és la tècnica de tenir paciència i fer seguiment."},
+    {q:"Un venedor pregunta primer quins problemes té el client amb la qualitat dels seus productes i, un cop coneguda la resposta, li proposa un equip que hi respon directament. Quina tècnica hi ha aplicada?", opts:["Escoltar abans de vendre","Pensar a llarg termini","Tenir paciència i fer seguiment","Deixar-los provar el producte"], correct:0, tip:"Preguntar i entendre la necessitat del client abans d'oferir res és escoltar abans de vendre."}
+  ];
+
+  var TF = [
+    {s:"Un mateix objecte físic pot ser producte de consum o producte industrial segons qui el compra.", a:true},
+    {s:"El mercat industrial es caracteritza per compres puntuals i molt ràpides.", a:false},
+    {s:"La demanda derivada depèn de la demanda del mercat de consum final.", a:true},
+    {s:"Els agents comercials normalment cobren només un sou fix, mai comissió.", a:false},
+    {s:"Kompass i D&B Hoovers són exemples de bases de dades per localitzar clients industrials.", a:true},
+    {s:"La marca no influeix gens en la confiança del client industrial.", a:false},
+    {s:"El lloc de fabricació (\"made in\") pot influir en la percepció de qualitat d'un producte.", a:true},
+    {s:"La garantia legal té sempre un cost extra per al client.", a:false},
+    {s:"El servei postvenda pot incloure el manteniment i el subministrament de recanvis.", a:true},
+    {s:"El marcatge CE demostra que un producte compleix la normativa europea.", a:true},
+    {s:"Els atributs intangibles es poden tocar físicament.", a:false},
+    {s:"Un client institucional sol haver de complir un procés de concurs públic.", a:true},
+    {s:"En un lísing, el client paga tot el preu del producte d'un sol cop.", a:false},
+    {s:"Les fires i exposicions són útils per conèixer clients industrials cara a cara.", a:true},
+    {s:"Els subministraments són productes que l'empresa consumeix dia a dia per poder funcionar.", a:true},
+    {s:"Un client a l'engròs compra poca quantitat per revendre-la ràpidament.", a:false},
+    {s:"L'assegurança de crèdit cobreix el risc que el client no pagui la factura.", a:true},
+    {s:"Un component és una peça que s'integra dins d'un producte més gran, com un motor per a una rentadora.", a:true},
+    {s:"Un intermediari transforma el producte abans de vendre'l al client final.", a:false},
+    {s:"Convèncer diverses persones alhora és útil en el mercat industrial perquè sovint hi ha diversos departaments que decideixen la compra.", a:true},
+    {s:"La 'venda agressiva' és una de les cinc tècniques de venda recomanades per al mercat industrial.", a:false},
+    {s:"Un hospital públic que treu un concurs per comprar bates quirúrgiques compra pel canal institucional.", a:true}
+  ];
+
+  var VIDEO_INFO = {
+    title: "Napo... perill: productes químics!",
+    url: "https://www.youtube.com/watch?v=5PrAybF5mJg",
+    minutes: 12,
+    desc: "Un curtmetratge d'animació (EU-OSHA) que explica, amb humor, què signifiquen els pictogrames de perillositat que porten molts productes químics: irritant, inflamable, corrosiu, tòxic i perillós per al medi ambient."
+  };
+
+  var PICTO_QUIZ = [
+    {q:"Quin pictograma indica que un producte és inflamable?", opts:["Una flama","Una calavera amb ossos encreuats","Un arbre i un peix morts","Un núvol gris"], correct:0, tip:"El símbol de la flama avisa que el producte pot cremar amb facilitat."},
+    {q:"Quin símbol indica que un producte és tòxic?", opts:["Un signe d'exclamació (!)","Una calavera amb ossos encreuats","Una proveta vessant sobre una mà","Un cercle amb una flama"], correct:1, tip:"La calavera amb ossos encreuats és el pictograma clàssic de toxicitat greu."},
+    {q:"Quin pictograma avisa que un producte pot cremar la pell o els ulls en contacte directe?", opts:["El signe d'exclamació (!)","Una flama","El símbol de corrosió (una proveta vessant sobre una mà o una superfície)","Un arbre i un peix morts"], correct:2, tip:"El símbol de corrosió mostra líquid que crema una superfície i una mà: indica risc de cremades químiques."},
+    {q:"Quin pictograma indica que un producte és perillós per al medi ambient?", opts:["Un signe d'exclamació (!)","Un arbre i un peix morts","Una calavera","Una flama"], correct:1, tip:"L'arbre i el peix morts adverteixen que el producte pot contaminar l'aigua o la natura."},
+    {q:"Un producte que irrita lleugerament la pell o els ulls, sense ser greu, porta el pictograma...", opts:["De la calavera","Del signe d'exclamació (!)","Del peix mort","De la flama"], correct:1, tip:"El signe d'exclamació s'utilitza per a perills més lleus, com irritacions."},
+    {q:"Per què és útil que un agent comercial conegui aquests pictogrames?", opts:["No té cap utilitat comercial, només és cosa dels tècnics","Perquè pot explicar la seguretat i la normativa del producte al client, generant confiança","Perquè així pot amagar-los al client si el producte no els compleix","Perquè són obligatoris només per a l'exportació"], correct:1, tip:"La seguretat i la certificació són un argument de venda: expliquen confiança i compliment normatiu al client."}
+  ];
+
+  var WS_WORDS = [
+    {grid:"PRODUCTE", label:"Producte"},
+    {grid:"INDUSTRIAL", label:"Industrial"},
+    {grid:"CLIENT", label:"Client"},
+    {grid:"MAJORISTA", label:"Majorista"},
+    {grid:"DETALL", label:"Detall"},
+    {grid:"ENGROS", label:"Engròs"},
+    {grid:"MARCA", label:"Marca"},
+    {grid:"GARANTIA", label:"Garantia"},
+    {grid:"FABRICANT", label:"Fabricant"},
+    {grid:"USUARI", label:"Usuari"},
+    {grid:"ENVAS", label:"Envàs"},
+    {grid:"AGENT", label:"Agent"}
+  ];
+  var WS_SIZE = 14;
+
+  var MEMORY_PAIRS = [
+    {term:"Client institucional", def:"Administració o empresa gran que sol comprar mitjançant concurs públic"},
+    {term:"Client a l'engròs", def:"Compra grans quantitats per repartir-les a altres botigues"},
+    {term:"Agent comercial", def:"Professional que busca clients i cobra comissió per cada venda"},
+    {term:"Demanda derivada", def:"Depèn de la demanda d'un altre producte, com les rodes i els cotxes"},
+    {term:"Garantia comercial", def:"L'afegeix l'empresa pel seu compte, per sobre de la legal"},
+    {term:"Envàs", def:"Conté i presenta el producte; actua com un \"venedor silenciós\""},
+    {term:"Marcatge CE", def:"Demostra que el producte compleix la normativa europea"},
+    {term:"Intermediari", def:"Compra per distribuir o revendre el producte, sense transformar-lo"}
+  ];
+
+  var CLASSIFY = [
+    {phrase:"Una fàbrica de sabates compra cuir per fer-hi calçat.", opts:["Fabricant","Usuari","Intermediari"], correct:0},
+    {phrase:"Un gimnàs compra màquines de musculació per als seus socis.", opts:["Fabricant","Usuari","Intermediari"], correct:1},
+    {phrase:"Un majorista compra eines per revendre-les a botigues petites.", opts:["Fabricant","Usuari","Intermediari"], correct:2},
+    {phrase:"Una fàbrica de conserves compra llaunes per envasar-hi els seus productes.", opts:["Fabricant","Usuari","Intermediari"], correct:0},
+    {phrase:"Un ajuntament compra fanals LED per il·luminar els carrers.", opts:["Fabricant","Usuari","Intermediari"], correct:1},
+    {phrase:"Un distribuïdor compra electrodomèstics al fabricant per revendre'ls.", opts:["Fabricant","Usuari","Intermediari"], correct:2},
+    {phrase:"Una fàbrica tèxtil compra fils de cotó per teixir-hi roba.", opts:["Fabricant","Usuari","Intermediari"], correct:0},
+    {phrase:"Una botiga de barri compra 20 unitats per vendre-les als seus clients.", opts:["Detall","Engròs","Institucional"], correct:0},
+    {phrase:"Un hospital públic treu un concurs per comprar bates quirúrgiques.", opts:["Detall","Engròs","Institucional"], correct:2},
+    {phrase:"Un distribuïdor compra 5.000 unitats per repartir-les a diverses botigues.", opts:["Detall","Engròs","Institucional"], correct:1},
+    {phrase:"Una escola pública compra ordinadors mitjançant un concurs de l'administració.", opts:["Detall","Engròs","Institucional"], correct:2},
+    {phrase:"Una petita papereria compra 10 capses de bolígrafs per revendre-les.", opts:["Detall","Engròs","Institucional"], correct:0},
+    {phrase:"Un supermercat regional compra un camió sencer de conserves.", opts:["Detall","Engròs","Institucional"], correct:1},
+    {phrase:"Una empresa gran ha de superar un concurs públic per comprar maquinària.", opts:["Detall","Engròs","Institucional"], correct:2}
+  ];
+
+  var OFFER_SCENARIOS = [
+    {client:"Un hospital públic (client institucional) que ha de superar un concurs i valora sobretot la seguretat i la normativa.",
+      cards:[
+        {label:"Certificació ISO 9001 de qualitat", fit:true},
+        {label:"Marcatge CE i botó d'aturada d'emergència", fit:true},
+        {label:"Documentació tècnica completa per al concurs públic", fit:true},
+        {label:"Garantia estesa de 5 anys pagant un extra", fit:false},
+        {label:"Sèrie limitada i disseny exclusiu", fit:false},
+        {label:"Preu més baix com més grans quantitats es comprin", fit:false}
+      ]},
+    {client:"Una petita fàbrica (client fabricant) que vol reduir costos de manteniment a llarg termini.",
+      cards:[
+        {label:"Servei postvenda amb manteniment inclòs", fit:true},
+        {label:"Garantia comercial ampliada sense cost extra", fit:true},
+        {label:"Preu per volum si compra a l'engròs", fit:true},
+        {label:"Embalatge de luxe i sèrie limitada", fit:false},
+        {label:"Marca de prestigi internacional", fit:false},
+        {label:"Assessorament d'imatge personal per a l'equip de vendes", fit:false}
+      ]},
+    {client:"Una botiga que busca un producte de gamma alta per distingir-se de la competència.",
+      cards:[
+        {label:"Marca reconeguda i imatge de prestigi", fit:true},
+        {label:"Disseny exclusiu i sèrie limitada", fit:true},
+        {label:"Embalatge i etiquetatge de qualitat premium", fit:true},
+        {label:"Preu més barat com més unitats es comprin", fit:false},
+        {label:"Certificació bàsica de seguretat CE", fit:false},
+        {label:"Lísing a 5 anys per finançar la compra", fit:false}
+      ]}
+  ];
+
+  var TEORIA = [
+    {bloc:"Bloc 1 · El mercat i el client industrial", items:[
+      {t:"1. Què és un producte industrial?", p:"Un producte industrial és un bé o servei comprat per una empresa, organització o institució per incorporar-lo al seu procés de producció, prestar serveis, revendre'l o utilitzar-lo en les seves operacions internes.", p2:"Un mateix objecte físic pot ser producte de consum o producte industrial segons qui el compra i per a què: la farina que compra una família per fer un pastís és producte de consum; la mateixa farina comprada per una fàbrica de brioixeria és producte industrial."},
+      {t:"2. Tipus de productes industrials", p:"Es classifiquen en sis categories: matèries primeres (recursos gairebé sense transformar, com la llet o la fusta), materials processats (ja transformats, com la farina o el ciment), components (peces que s'integren en un producte més gran, com un motor), equips de capital (màquines que no es consumeixen amb l'ús, com la maquinària o els tractors), subministraments (productes que l'empresa consumeix dia a dia, com el paper d'oficina) i serveis industrials (serveis externs, com el manteniment o l'assessoria)."},
+      {t:"3. El mercat industrial", p:"Està format per les empreses, organitzacions i institucions que compren productes industrials per utilitzar-los en la seva pròpia activitat, no per al consum final. Es caracteritza per: demanda derivada (depèn de la demanda del mercat de consum), alts volums de compra, processos de compra complexos (hi intervenen diversos departaments), decisions tècniques (basades en qualitat i cost, no en l'impuls) i fidelització a llarg termini."},
+      {t:"4. Clients: qui compra?", p:"Els fabricants compren matèries primeres, components o equips per transformar-los en productes semielaborats o acabats. Els usuaris no transformen el producte, sinó que l'utilitzen directament per a la seva activitat. Els intermediaris compren productes per comercialitzar-los, distribuir-los o instal·lar-los, fent de pont amb el consumidor final."},
+      {t:"5. Clients: detall, engròs o institucional?", p:"El canal de compra és la manera i quantitat en què un client compra. El client al detall compra poca quantitat per revendre-la ràpid, buscant bon preu de revenda. El client a l'engròs compra molta quantitat per repartir-la a altres botigues, buscant millor preu com més en compra. El client institucional (administració, hospitals, empreses grans) sol haver de fer un concurs públic per comprar."}
+    ]},
+    {bloc:"Bloc 2 · Com trobar i abordar el client industrial", items:[
+      {t:"6. Per què costa més trobar clients industrials", p:"Per tres motius principals: hi ha menys clients potencials (perdre'n un pot suposar una gran pèrdua de vendes), els canals són més complexos (no serveix la publicitat normal, cal anar a fires o trucar directament) i calen mètodes personalitzats (tractar cada client de manera individual)."},
+      {t:"7. Fonts d'informació per localitzar clients", p:"Les principals són: bases de dades (com Kompass o D&B Hoovers), plataformes B2B (com Alibaba o ThomasNet), fires i exposicions, xarxes i fòrums professionals (com LinkedIn), el CRM i històric de contactes de l'empresa, i la investigació de mercat quan es vol entrar en un mercat nou."},
+      {t:"8. Els agents comercials", p:"Un agent comercial és un professional independent que actua com a intermediari entre l'empresa venedora i el client industrial, fomentant la trobada entre comprador i venedor, i que normalment cobra una comissió per cada venda. Les seves funcions són: buscar clients nous, fer el primer contacte, mantenir la relació amb els clients aconseguits i informar l'empresa del que veu i sent al mercat."},
+      {t:"9. Tècniques de venda per a l'agent comercial", p:"Les cinc claus són: escoltar abans de vendre (entendre bé què necessita el client), pensar a llarg termini (l'objectiu és mantenir el client any rere any), convèncer diverses persones alhora (tècnics, financers i usuaris es fixen en coses diferents), deixar-los provar el producte, i tenir paciència i fer seguiment."}
+    ]},
+    {bloc:"Bloc 3 · Els atributs del producte com a argument de venda", items:[
+      {t:"10. Els tres tipus d'atributs", p:"Atributs intrínsecs: el que el producte és per dins (composició, qualitat, disseny). Atributs externs: el que es veu des de fora (envàs, embalatge, etiqueta). Atributs intangibles: el que no es toca però dona valor afegit (marca, garantia, servei)."},
+      {t:"11. Atributs intrínsecs", p:"Es divideixen en composició (de quins materials està fet), qualitat (fins a quin punt compleix bé la seva funció, sovint certificada amb normes com la ISO 9001) i disseny (aspecte estètic, facilitat d'ús i possibilitat de personalització)."},
+      {t:"12. Atributs externs", p:"L'envàs conté, protegeix i presenta el producte, actuant com un 'venedor silenciós'. L'embalatge protegeix durant el transport i l'emmagatzematge. L'etiquetatge dona la informació essencial per identificar el producte i complir la normativa."},
+      {t:"13. Atributs intangibles I: la marca i el 'made in'", p:"La marca és un símbol distintiu que diferencia el producte de la competència i actua com a indicador de confiança. El lloc de fabricació ('made in') té un impacte significatiu en la percepció de qualitat, ja que els clients associen certs països amb estàndards concrets."},
+      {t:"14. Atributs intangibles II: la garantia", p:"Hi ha quatre tipus: legal (marcada per la llei, sense cost extra), comercial (l'afegeix l'empresa pel seu compte per diferenciar-se), de satisfacció (compromís de retornar els diners si el client no queda content) i estesa (el client paga un extra per allargar la cobertura)."},
+      {t:"15. Atributs intangibles III: servei postvenda", p:"El servei prevenda inclou demostracions i resolució de dubtes tècnics abans de la compra. El servei postvenda inclou el manteniment, el subministrament de recanvis i el seguiment de la satisfacció del client un cop feta la venda."},
+      {t:"16. Seguretat i certificació del producte", p:"La seguretat transmet confiança quan el producte no presenta riscos en condicions d'ús normals. La certificació és el procés pel qual una entitat independent verifica que un producte compleix normatives (com el marcatge CE). Les normes ISO són estàndards reconeguts mundialment que garanteixen criteris homogenis de gestió i qualitat."}
+    ]},
+    {bloc:"Bloc 4 · El tancament de l'operació", items:[
+      {t:"17. Els facilitadors de la venda", p:"En vendes de gran valor solen intervenir companyies d'assegurances (de transport, de responsabilitat civil o de crèdit) i entitats financeres (lísing, préstecs i línies de crèdit, o factoring i avals bancaris) que donen suport a l'operació perquè es pugui tancar amb confiança."},
+      {t:"18. Síntesi: de l'atribut a l'oferta comercial", p:"Per construir una bona oferta cal seguir quatre passos: identificar el tipus de client i el seu canal, seleccionar els atributs rellevants per a aquest client concret, construir l'argumentari combinant atributs intrínsecs, externs i intangibles, i preveure el suport necessari per tancar l'operació (finançament, assegurances, lliurament)."}
+    ]}
+  ];
+
+  var ACTIVITIES = [
+    {num:1, bloc:"Bloc 1", title:"Consum, industrial... i de quin tipus?",
+      desc:"Classifica productes com de consum o industrials, i classifica productes industrials segons el tipus: matèria primera, material processat, component, equip de capital, subministrament o servei industrial.",
+      detail:"1. Per a cada cas, indica si es tracta d'un producte de consum (C) o d'un producte industrial (I), i justifica la resposta tenint en compte qui el compra i per a què:\na) Pot de pintura comprat en una ferreteria per pintar l'habitació de casa.\nb) El mateix pot de pintura, comprat per una fàbrica de mobles per pintar-ne la producció.\nc) Farina comprada al supermercat per fer un pastís.\nd) Farina comprada per una fàbrica de pa per elaborar els seus productes.\ne) 50 ordinadors portàtils comprats per una empresa per equipar les oficines.\nf) Sabó industrial comprat per un hotel per abastir totes les habitacions.\ng) Rodes de bicicleta comprades per una empresa que fabrica bicicletes.\nh) Un cotxe comprat per una família per anar a treballar.\ni) El mateix model de cotxe, comprat per una empresa de lloguer de vehicles per a la seva flota.\nj) Cafè comprat en un supermercat per prendre'l a casa.\nk) Cafè comprat per una cafeteria per servir-lo als clients.\nl) Un ordinador portàtil comprat per un estudiant per fer els deures.\n\n2. Classifica cada producte industrial en: matèria primera / material processat / component / equip de capital / subministrament / servei industrial (fusta sense tractar, planxes d'acer, motor elèctric per a rentadora, màquina d'envasar, paper d'oficina, servei de neteja industrial, bateries per a cotxes elèctrics, tractor agrícola, guants de protecció, assessoria fiscal, cotó en floca, ciment, cinta transportadora, cargols i femelles, productes de neteja d'oficina, manteniment informàtic)."},
+    {num:2, bloc:"Bloc 1", title:"El mercat industrial i els seus clients",
+      desc:"Identifica quina característica del mercat industrial reflecteix cada situació, i classifica clients segons tipus (fabricant/usuari/intermediari) i canal (detall/engròs/institucional).",
+      detail:"1. Per a cada situació, indica quina característica del mercat industrial hi queda reflectida (demanda derivada / alts volums / procés de compra complex / decisions tècniques / fidelització a llarg termini) i explica per què: un fabricant de pneumàtics que ven més quan puja la producció de cotxes, una fàbrica que compra 50.000 cargols en una sola comanda, una compra que necessita l'aprovació de tècnics, compres i finances, una empresa que tria proveïdor per especificacions tècniques encara que sigui més car, una empresa que porta 15 anys amb el mateix proveïdor, la relació entre vendes de mòbils i de pantalles tàctils, un proveïdor que ven contenidors sencers, i una empresa que fa proves durant mesos abans de canviar de proveïdor.\n\n2. Classifica com a fabricant, usuari o intermediari: una fàbrica de sabates que compra cuir, un gimnàs que compra màquines de musculació, un majorista de ferreteria, una fàbrica de conserves que compra llaunes, un ajuntament que compra fanals LED, un distribuïdor d'electrodomèstics, una empresa de càtering que compra forns, una fàbrica tèxtil que compra fils de cotó, i un instal·lador de plaques solars.\n\n3. Classifica pel canal (detall/engròs/institucional): una botiga de barri, un hospital públic amb concurs, un distribuïdor de 5.000 unitats, una escola pública amb concurs, una papereria que compra 10 capses, i un supermercat regional que compra un camió sencer."},
+    {num:3, bloc:"Bloc 2", title:"Sóc agent comercial: troba i convenç el teu client",
+      desc:"Tria un producte industrial (maquinària de neteja, components d'automoció, mobiliari d'oficina, EPI o envasos de cartró) i desenvolupa una estratègia de captació de clients i un guió de trucada comercial.",
+      detail:"1. Explica, amb un exemple del teu producte, per què costarà trobar clients: menor nombre de clients, canals de comunicació més complexos i necessitat de mètodes personalitzats.\n\n2. Tria 3 fonts d'informació (bases de dades, plataformes B2B, fires, xarxes i fòrums, CRM, investigació de mercat) i explica per què les faries servir amb aquest producte.\n\n3. Escriu el guió de la primera trucada a un client potencial, amb quatre parts: salutació i presentació, motiu de la trucada, resposta a una possible objecció, i tancament. Has d'aplicar com a mínim dues tècniques de venda de les que hem après."},
+    {num:4, bloc:"Bloc 3", title:"L'etiqueta i l'envàs com a arguments de venda",
+      desc:"En grups de fins a 3 persones: dissenya l'etiqueta d'un motor elèctric industrial, analitza un envàs real com a 'venedor silenciós' i revisa quins elements són obligatoris en l'etiquetatge d'aliments.",
+      detail:"1. Dissenyeu l'etiqueta d'un motor elèctric industrial amb, com a mínim: nom del fabricant, país d'origen, dades tècniques bàsiques (potència, voltatge) i un símbol o marcatge de seguretat.\n\n2. Busqueu la fotografia d'un envàs real original i creatiu, i expliqueu en 2-3 frases per què actua com a 'venedor silenciós' (què transmet sense paraules: qualitat, confiança, marca...).\n\n3. Consultant la guia d'etiquetatge d'aliments del Ministeri de Comerç, indiqueu si són obligatoris en l'etiqueta d'un envàs de cereals: la denominació de l'aliment, la data de caducitat, els consells nutricionals, si conté gluten o altres al·lèrgens, el codi de barres i la quantitat neta."},
+    {num:5, bloc:"Bloc 3", title:"Pictogrames de seguretat en productes químics",
+      desc:"Mira el vídeo 'Napo — Danger: chemicals', identifica els pictogrames de perillositat que hi apareixen i analitza'n la funció com a argument de venda.",
+      detail:"1. Mira el vídeo 'Napo — Danger: chemicals' (napofilm.net).\n\n2. Anota tots els pictogrames de perillositat que hi apareguin.\n\n3. Per a cada pictograma, completa una taula amb: dibuix o descripció, què significa, i un exemple de producte que el podria portar.\n\n4. Respon en 2-3 frases per què aquests pictogrames són importants no només per seguretat, sinó també com a argument de venda."},
+    {num:6, bloc:"Bloc 2", title:"Detecta la tècnica de venda",
+      desc:"Analitza situacions i frases de venda reals per identificar quina de les cinc tècniques de venda apreses a classe s'hi aplica, i investiga la 'venda per por' i la 'venda agressiva'.",
+      detail:"1. Llegeix una situació sobre un conservant alimentari i indica quina tècnica de venda hi queda reflectida, justificant la resposta.\n\n2. Investiga la 'venda per por' i la 'venda agressiva' (no formen part de les 5 tècniques apreses) i valora si funcionarien amb un client industrial, tenint en compte les decisions tècniques, el procés de compra complex i les relacions a llarg termini.\n\n3. Per a tres frases donades, indica quina de les 5 tècniques de venda hi ha aplicada."}
+  ];
+
+  var RAS = [
+    {id:'ra1', num:1, short:"Productes industrials", full:"Elabora ofertes comercials de productes industrials i/o del sector primari adaptant els arguments de venda als diferents tipus de clients.", active:true, color:'#E2AC1F'},
+    {id:'ra2', num:2, short:"Ofertes de serveis", full:"Confecciona ofertes comercials de serveis, adaptant els arguments de venda a les característiques específiques de cada servei.", active:false, color:'#2F8F82'},
+    {id:'ra3', num:3, short:"Productes tecnològics", full:"Realitza activitats pròpies de la venda de serveis i/o productes tecnològics, aplicant tècniques de venda adequades.", active:false, color:'#C1502E'},
+    {id:'ra4', num:4, short:"Productes de gamma alta", full:"Desenvolupa activitats relacionades amb la venda de productes de marca o de gamma alta.", active:false, color:'#3F8452'},
+    {id:'ra5', num:5, short:"Promoció d'immobles", full:"Prepara diferents accions promocionals de venda de béns immobles, aplicant tècniques de comunicació adaptades al sector.", active:false, color:'#7B5CA6'},
+    {id:'ra6', num:6, short:"Venda d'immobles", full:"Desenvolupa activitats relacionades amb el procés de venda d'immobles, emplenant els documents generats en aquestes operacions.", active:false, color:'#3D6FA8'},
+    {id:'ra7', num:7, short:"Telemàrqueting", full:"Desenvolupa activitats de telemàrqueting en venda telefònica, captació i fidelització de clients.", active:false, color:'#C9578A'}
+  ];
+
+  function raById(id){ for(var i=0;i<RAS.length;i++){ if(RAS[i].id===id) return RAS[i]; } return null; }
+
+  var LEVELS = [
+    {title:"Aprenent d'agent comercial"},
+    {title:"Agent comercial junior"},
+    {title:"Agent comercial de serveis"},
+    {title:"Agent comercial tecnològic"},
+    {title:"Agent comercial sènior"},
+    {title:"Agent comercial immobiliari"},
+    {title:"Cap d'agents comercials"}
+  ];
+
+  var RA_COMPLETION_CHECKS = {
+    ra1: function(st){
+      return st.quiz.correctIds.length === QUIZ.length
+        && st.cases.correctIds.length === CASES.length
+        && !!st.wordsearch.done;
+    }
+    // Quan s'activi RA2, RA3... només cal afegir aquí el seu propi comprovador.
+  };
+
+  function isRACompleted(st, raId){
+    var fn = RA_COMPLETION_CHECKS[raId];
+    return fn ? fn(st) : false;
+  }
+
+  function completedRACount(st){
+    var n = 0;
+    RAS.forEach(function(ra){ if(isRACompleted(st, ra.id)) n++; });
+    return n;
+  }
+
+  function ra1Progress(st){
+    var totalTasks = QUIZ.length + CASES.length + 1;
+    var doneTasks = st.quiz.correctIds.length + st.cases.correctIds.length + (st.wordsearch.done ? 1 : 0);
+    return Math.min(100, Math.round((doneTasks/totalTasks)*100));
+  }
+
+  function levelInfo(st){
+    var count = completedRACount(st);
+    var idx = Math.min(count, LEVELS.length-1);
+    var current = LEVELS[idx];
+    var next = LEVELS[idx+1] || null;
+    var nextRA = next ? RAS[idx] : null;
+    var pct = 100;
+    if(next){
+      pct = (nextRA && nextRA.id==='ra1') ? ra1Progress(st) : 0;
+    }
+    return {title:current.title, next:next, pct:pct, nextRA:nextRA};
+  }
+
+  var BADGES = [
+    {id:'firstpay', icon:'💶', title:"Primer sou", desc:"Has cobrat la teva primera nòmina.", check:function(st){ return st.history.length>0; }},
+    {id:'streak10', icon:'🔥', title:"Ratxa de 10", desc:"10 respostes seguides encertades sense fallar.", check:function(st){ return st.streak && st.streak.best>=10; }},
+    {id:'fastws', icon:'⏱️', title:"Sopa rècord", desc:"Has completat la sopa de lletres en menys d'un minut.", check:function(st){ return !!st.wordsearch.fastDone; }},
+    {id:'wsdone', icon:'🔤', title:"Ull de lletres", desc:"Has completat la sopa de lletres.", check:function(st){ return !!st.wordsearch.done; }},
+    {id:'quizperfect', icon:'🎯', title:"Test perfecte", desc:"Has encertat totes les preguntes del test ràpid.", check:function(st){ return st.quiz.correctIds.length===QUIZ.length; }},
+    {id:'casesperfect', icon:'💼', title:"Casos resolts", desc:"Has superat tots els casos pràctics.", check:function(st){ return st.cases.correctIds.length===CASES.length; }},
+    {id:'video', icon:'☣️', title:"Ull de perill", desc:"Has superat la prova pràctica del vídeo de pictogrames.", check:function(st){ return st.pictoQuiz.correctIds.length===PICTO_QUIZ.length; }},
+    {id:'memory', icon:'🧠', title:"Memòria d'agent", desc:"Has completat el joc d'aparellar conceptes.", check:function(st){ return st.memory && st.memory.done; }},
+    {id:'classify10', icon:'⚡', title:"Classificador rècord", desc:"Has encertat 10 o més classificacions en una sola ronda contra rellotge.", check:function(st){ return st.classify && st.classify.best>=10; }},
+    {id:'topjob', icon:'👑', title:"Cap d'agents comercials", desc:"Has arribat a la categoria màxima.", check:function(st){ return completedRACount(st) >= LEVELS.length-1; }}
+  ];
+
+  function renderLadder(opts){
+    opts = opts || {};
+    var variant = opts.light ? ' vt-ladder-light' : '';
+    var html = '<div class="vt-ladder'+variant+'">';
+    LEVELS.forEach(function(l, i){
+      var isCurrent = opts.current ? (l.title === opts.current) : (i===0);
+      html += '<span class="vt-ladder-item'+(isCurrent?' vt-start':'')+'">'+esc(l.title)+'</span>';
+      if(i < LEVELS.length-1) html += '<span class="vt-ladder-arrow">&rarr;</span>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function euro(n){ return n + " €"; }
+
+  function hexToRgba(hex, alpha){
+    hex = hex.replace('#','');
+    var r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
+  function idealTextColor(hex){
+    hex = hex.replace('#','');
+    var r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
+    var lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+    return lum > 0.6 ? '#1B2A41' : '#FFFFFF';
+  }
+
+  function slugify(name){
+    return (name||"").trim().toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+  }
+
+  function employeeNumber(slug){
+    var h = 0;
+    for(var i=0;i<slug.length;i++){ h = (h*31 + slug.charCodeAt(i)) % 99999; }
+    return String(h).padStart(5,"0");
+  }
+
+  function initials(name){
+    var parts = (name||"").trim().split(/\s+/).filter(Boolean);
+    if(parts.length===0) return "??";
+    if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
+    return (parts[0][0]+parts[1][0]).toUpperCase();
+  }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
+    return a;
+  }
+
+  /* ---------------- storage helpers ----------------
+     NOTA: aquesta plataforma es publica com a pàgina independent (per
+     compartir-la per exemple a Classroom), no es consulta dins d'aquest
+     xat. window.storage només funciona a la vista prèvia de l'artifact
+     en aquesta conversa, així que fem servir el localStorage del
+     navegador de cada persona: cada dispositiu/navegador guarda el seu
+     propi progrés. */
+  function loadRegistry(){
+    try {
+      var raw = localStorage.getItem(REGISTRY_KEY);
+      return Promise.resolve(raw ? JSON.parse(raw) : {students:{}});
+    } catch(e){ return Promise.resolve({students:{}}); }
+  }
+  function saveRegistry(reg){
+    try { localStorage.setItem(REGISTRY_KEY, JSON.stringify(reg)); } catch(e){}
+    return Promise.resolve();
+  }
+  function loadStudent(slug){
+    try {
+      var raw = localStorage.getItem("student:"+slug);
+      return Promise.resolve(raw ? JSON.parse(raw) : null);
+    } catch(e){ return Promise.resolve(null); }
+  }
+  var lastSyncWarn = 0;
+  function cloudOn(){ return !!CLOUD_URL; }
+  function cloudCall(payload){
+    return fetch(CLOUD_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload)})
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return null; });
+  }
+  function summaryOf(data){
+    return {balance:data.balance, quiz:data.quiz.correctIds.length, cases:data.cases.correctIds.length,
+      ws:!!data.wordsearch.done, speed:data.speed.best, picto:data.pictoQuiz.correctIds.length,
+      memory:!!data.memory.done, classify:data.classify.best, ra1:isRACompleted(data,'ra1')};
+  }
+  function dataForCloud(data){
+    var copy = JSON.parse(JSON.stringify(data));
+    if(copy.history && copy.history.length>120) copy.history = copy.history.slice(0,120);
+    return copy;
+  }
+  function rosterEntry(slug, data){
+    return {slug:slug, name:data.name, balance:data.balance,
+      quizCount:data.quiz.correctIds.length, casesCount:data.cases.correctIds.length,
+      wsDone:data.wordsearch.done, speedBest:data.speed.best, ra1Completed:isRACompleted(data,'ra1')};
+  }
+  function mergeCloudMessages(data, msgs){
+    var added = false;
+    var have = {};
+    data.messages.forEach(function(m){ if(m.id) have[String(m.id)] = true; });
+    (msgs||[]).forEach(function(m){
+      if(!have[String(m.id)]){ data.messages.unshift({id:String(m.id), date:m.date, text:m.text, read:false}); added = true; }
+    });
+    return added;
+  }
+  function saveStudent(slug, data){
+    try { localStorage.setItem("student:"+slug, JSON.stringify(data)); } catch(e){}
+    if(cloudOn()){
+      var entry = S.registry && S.registry.students && S.registry.students[slug];
+      if(entry){
+        return cloudCall({action:'save', slug:slug, pin:entry.pin, summary:summaryOf(data), data:dataForCloud(data)}).then(function(res){
+          if(!res || !res.ok){
+            var now = Date.now();
+            if(now - lastSyncWarn > 20000){ lastSyncWarn = now; toast('No s\'ha pogut desar al núvol. Es tornarà a intentar.'); }
+          }
+        });
+      }
+    }
+    return Promise.resolve();
+  }
+  function newStudentData(name){
+    return {
+      name: name,
+      balance: 0,
+      createdAt: new Date().toLocaleDateString('ca-ES'),
+      history: [],
+      quiz: {correctIds:[]},
+      cases: {correctIds:[]},
+      wordsearch: {done:false, fastDone:false},
+      speed: {best:0},
+      messages: [],
+      pictoQuiz: {correctIds:[]},
+      streak: {current:0, best:0},
+      memory: {done:false},
+      classify: {best:0},
+      offerGame: {doneScenarios:[]},
+      escapeClaimed: false,
+      roulette: {lastDate:null}
+    };
+  }
+
+  function normalizeStudent(data){
+    if(!data) return data;
+    data.messages = data.messages || [];
+    data.pictoQuiz = data.pictoQuiz || {correctIds:[]};
+    data.streak = data.streak || {current:0, best:0};
+    data.memory = data.memory || {done:false};
+    data.classify = data.classify || {best:0};
+    data.offerGame = data.offerGame || {doneScenarios:[]};
+    if(typeof data.escapeClaimed === 'undefined') data.escapeClaimed = false;
+    data.roulette = data.roulette || {lastDate:null};
+    if(data.wordsearch && typeof data.wordsearch.fastDone === 'undefined') data.wordsearch.fastDone = false;
+    return data;
+  }
+
+  /* ---------------- app state ---------------- */
+  var S = {
+    view: "loading",
+    registerMode: false,
+    loginError: "",
+    teacherError: "",
+    registry: {students:{}},
+    slug: null,
+    student: null,
+    quiz: {index:0, answered:false, selected:null},
+    cases: {index:0, answered:false, selected:null},
+    pictoQuiz: {index:0, answered:false, selected:null},
+    wsGame: null,
+    speedGame: null,
+    memoryGame: null,
+    classifyGame: null,
+    offerGame: {index:0, selected:{}},
+    rouletteGame: {spinning:false, question:null, answered:false},
+    teacherRoster: null,
+    currentRA: null,
+    teacherPeekMode: false,
+    teacherComposeTarget: null,
+    cloudStudents: null,
+    teacherCode: ""
+  };
+
+  function persistStudent(){
+    if(S.teacherPeekMode) return;
+    if(S.slug && S.student){ saveStudent(S.slug, S.student); }
+  }
+
+  function pay(amount, concept){
+    S.student.balance += amount;
+    S.student.history.unshift({date: new Date().toLocaleString('ca-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}), concept: concept, amount: amount});
+    persistStudent();
+    toast("+" + amount + " €");
+  }
+
+  function recordStreak(correct){
+    var st = S.student.streak;
+    if(correct){ st.current++; if(st.current > st.best) st.best = st.current; }
+    else { st.current = 0; }
+  }
+
+  function toast(msg){
+    var root = document.getElementById('vtToastRoot');
+    if(!root) return;
+    var el = document.createElement('div');
+    el.className = 'vt-toast';
+    el.textContent = msg;
+    root.appendChild(el);
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 1800);
+  }
+
+  /* ---------------- word search build ---------------- */
+  function buildWordSearch(){
+    var size = WS_SIZE;
+    var grid = [];
+    for(var r=0;r<size;r++){ grid.push(new Array(size).fill(null)); }
+    var dirs = [[0,1],[1,0],[1,1],[1,-1]];
+    var placements = [];
+    var words = shuffle(WS_WORDS);
+    words.forEach(function(w){
+      var letters = w.grid.split("");
+      var placed = false;
+      for(var attempt=0; attempt<300 && !placed; attempt++){
+        var dir = dirs[Math.floor(Math.random()*dirs.length)];
+        var row = Math.floor(Math.random()*size);
+        var col = Math.floor(Math.random()*size);
+        var endRow = row + dir[0]*(letters.length-1);
+        var endCol = col + dir[1]*(letters.length-1);
+        if(endRow<0||endRow>=size||endCol<0||endCol>=size) continue;
+        var ok = true;
+        for(var i=0;i<letters.length;i++){
+          var rr=row+dir[0]*i, cc=col+dir[1]*i;
+          if(grid[rr][cc] && grid[rr][cc]!==letters[i]){ ok=false; break; }
+        }
+        if(!ok) continue;
+        for(var j=0;j<letters.length;j++){
+          var r2=row+dir[0]*j, c2=col+dir[1]*j;
+          grid[r2][c2]=letters[j];
+        }
+        placements.push({word:w.grid,label:w.label,row:row,col:col,dir:dir,len:letters.length});
+        placed = true;
+      }
+    });
+    var ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(var r3=0;r3<size;r3++){
+      for(var c3=0;c3<size;c3++){
+        if(!grid[r3][c3]) grid[r3][c3] = ABC[Math.floor(Math.random()*ABC.length)];
+      }
+    }
+    return {grid:grid, placements:placements, found:[], selStart:null, startTime:Date.now()};
+  }
+
+  function pathCells(start, end){
+    var dr = end.row-start.row, dc = end.col-start.col;
+    var steps = Math.max(Math.abs(dr), Math.abs(dc));
+    if(steps===0) return null;
+    var stepR = dr/steps, stepC = dc/steps;
+    if(Math.abs(stepR)>1 || Math.abs(stepC)>1) return null;
+    if(!(Number.isInteger(dr/steps) && Number.isInteger(dc/steps))) return null;
+    var cells = [];
+    for(var i=0;i<=steps;i++){ cells.push({row:start.row+stepR*i, col:start.col+stepC*i}); }
+    return cells;
+  }
+
+  /* ---------------- rendering ---------------- */
+  function render(){
+    var el = document.getElementById('vtApp');
+    if(S.view==='loading'){ el.innerHTML = '<div class="vt-empty">Obrint el despatx…</div>'; return; }
+    if(S.view==='login'){ el.innerHTML = renderLogin(); return; }
+    if(S.view==='teacherLogin'){ el.innerHTML = renderTeacherLogin(); return; }
+    if(S.view==='teacher'){ el.innerHTML = renderTeacher(); return; }
+    if(S.view==='teacherCompose'){ el.innerHTML = renderTeacherCompose(); return; }
+    el.innerHTML = renderShell();
+  }
+
+  function renderLogin(){
+    var mode = S.registerMode;
+    var stampText = mode ? "Carnet en blanc" : "Primer dia com a agent";
+    return ''
+    + '<div class="vt-loginwrap">'
+      + '<div class="vt-kicker">Mòdul 1230 · Venda Tècnica</div>'
+      + '<h1>' + (mode ? "Apunta't com a futur agent comercial" : "Benvingut al teu espai d'agent comercial") + '</h1>'
+      + '<p class="vt-sub">Fitxa, resol reptes de vendes i puja d\'Aprenent d\'agent comercial fins a Cap d\'agents comercials. El sou és fictici; el que aprens, no.</p>'
+      + renderLadder()
+      + '<div class="vt-card">'
+        + '<div class="vt-stamp">'+stampText+'</div>'
+        + (S.loginError ? '<div class="vt-error">'+S.loginError+'</div>' : '')
+        + '<div class="vt-field"><label for="vtName">Nom i cognom</label><input id="vtName" type="text" placeholder="Ex: Laia Martí" autocomplete="off"/></div>'
+        + '<div class="vt-field"><label for="vtPin">PIN (4 xifres)</label><input id="vtPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"/></div>'
+        + (mode ? '<div class="vt-field"><label for="vtPin2">Repeteix el PIN</label><input id="vtPin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••"/></div>' : '')
+        + '<button class="vt-btn vt-btn-primary" data-action="'+(mode?'register':'login')+'">'+(mode ? "Signar contracte i entrar" : "Fitxar entrada")+'</button>'
+        + '<div class="vt-switchline">'
+          + (mode ? "Ja tens compte? " : "Encara no tens compte? ")
+          + '<button data-action="toggle-register">'+(mode ? "Inicia sessió" : "Crea'l ara")+'</button>'
+        + '</div>'
+      + '</div>'
+      + '<button class="vt-teacherlink" data-action="go-teacher-login">Accés per a la professora</button>'
+    + '</div>';
+  }
+
+  function renderTeacherLogin(){
+    return ''
+    + '<div class="vt-loginwrap">'
+      + '<div class="vt-kicker">Departament de recursos humans</div>'
+      + '<h1>Accés de la professora</h1>'
+      + '<p class="vt-sub">Introdueix el codi per veure la nòmina de tota la classe.</p>'
+      + (cloudOn() ? '' : '<div class="vt-teacher-note" style="margin-bottom:16px;">Important: aquesta vista només mostra els alumnes que s\'hagin registrat des d\'<strong>aquest mateix navegador i dispositiu</strong>. Si els alumnes es registren des dels seus propis ordinadors o mòbils, no apareixeran aquí. Fes-la servir sobretot per fer proves tu mateixa.</div>')
+      + '<div class="vt-card">'
+        + (S.teacherError ? '<div class="vt-error">'+S.teacherError+'</div>' : '')
+        + '<div class="vt-field"><label for="vtTeacherCode">Codi d\'accés</label><input id="vtTeacherCode" type="password"/></div>'
+        + '<button class="vt-btn vt-btn-primary" data-action="teacher-login">Entrar</button>'
+        + '<div class="vt-switchline"><button data-action="go-login">Torna a l\'accés d\'alumnes</button></div>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function renderTeacher(){
+    var roster = S.teacherRoster || [];
+    var chips = roster.map(function(s){ return '<button class="vt-namechip" data-action="teacher-peek" data-slug="'+esc(s.slug)+'" style="cursor:pointer;">'+esc(s.name)+'</button>'; }).join(' ');
+    var rows = roster.slice().sort(function(a,b){ return b.balance-a.balance; }).map(function(s){
+      var lvIdx = Math.min(s.ra1Completed ? 1 : 0, LEVELS.length-1);
+      var lvTitle = LEVELS[lvIdx].title;
+      return '<tr><td><button class="vt-rowlink" data-action="teacher-peek" data-slug="'+esc(s.slug)+'">'+esc(s.name)+'</button></td><td>'+esc(lvTitle)+'</td><td class="vt-amt">'+euro(s.balance)+'</td>'
+        + '<td>'+s.quizCount+'/'+QUIZ.length+'</td><td>'+s.casesCount+'/'+CASES.length+'</td>'
+        + '<td>'+(s.wsDone ? "Completada" : "Pendent")+'</td><td>'+s.speedBest+'</td>'
+        + '<td><button class="vt-msgbtn" data-action="teacher-message" data-slug="'+esc(s.slug)+'" data-name="'+esc(s.name)+'">✉ Missatge</button></td></tr>';
+    }).join("");
+    return ''
+    + '<div class="vt-shell">'
+      + '<div class="vt-topline"><h2 style="color:var(--ink);font-size:22px;">Nòmines de la classe</h2>'
+      + '<div style="display:flex;gap:8px;">'+(cloudOn() ? '<button class="vt-btn vt-btn-primary" style="width:auto;" data-action="teacher-refresh">Actualitza</button>' : '')+'<button class="vt-btn vt-btn-ghost" style="background:var(--paper);" data-action="go-login">Sortir</button></div></div>'
+      + '<div class="vt-content">'
+        + (cloudOn() ? '' : '<div class="vt-teacher-note">Aquesta llista només mostra alumnes registrats des d\'aquest mateix navegador. Si els teus alumnes es registren des dels seus propis dispositius, aquesta vista sortirà buida o incompleta: no és un problema de la plataforma, és una limitació d\'un compte personal de Claude sense organització compartida.</div>')
+        + '<div class="vt-summarycard"><h3 style="font-size:14.5px;margin-bottom:10px;">Alumnes donats d\'alta ('+roster.length+')</h3>'
+          + (roster.length===0 ? '<span style="color:var(--ink-2);font-size:13px;">Encara no s\'ha registrat ningú.</span>' : '<div style="display:flex;flex-wrap:wrap;gap:7px;">'+chips+'</div>')
+        + '</div>'
+        + (roster.length===0 ? '' :
+          '<table class="vt-table"><thead><tr><th>Alumne</th><th>Lloc de treball</th><th>Nòmina</th><th>Test</th><th>Casos</th><th>Sopa de lletres</th><th>Rècord rellotge</th><th>Missatge</th></tr></thead><tbody>'+rows+'</tbody></table>')
+      + '</div>'
+    + '</div>';
+  }
+
+  function esc(s){ return (s||"").replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function renderTeacherCompose(){
+    var t = S.teacherComposeTarget || {name:''};
+    return ''
+    + '<div class="vt-shell">'
+      + '<div class="vt-topline"><h2 style="color:var(--ink);font-size:20px;">Missatge per a '+esc(t.name)+'</h2>'
+        + '<button class="vt-btn vt-btn-ghost" style="background:var(--paper);" data-action="teacher-message-cancel">Cancel·lar</button></div>'
+      + '<div class="vt-content">'
+        + '<div class="vt-field"><label for="vtMsgText">El teu missatge (felicitació, feedback, un avís...)</label>'
+          + '<textarea id="vtMsgText" class="vt-msgtextarea" rows="5" placeholder="Felicitats per..."></textarea></div>'
+        + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">'
+          + '<button class="vt-btn vt-btn-ghost" data-action="msg-template" data-text="'+esc("Felicitats! Has fet una molt bona feina, segueix així.")+'">Plantilla: felicitació</button>'
+          + '<button class="vt-btn vt-btn-ghost" data-action="msg-template" data-text="'+esc("Repassa una mica més aquest apartat, encara et falta consolidar-lo.")+'">Plantilla: a millorar</button>'
+        + '</div>'
+        + '<button class="vt-btn vt-btn-primary" data-action="teacher-message-send">Enviar missatge</button>'
+      + '</div>'
+    + '</div>';
+  }
+
+  function renderShell(){
+    var st = S.student;
+    var lv = levelInfo(st);
+    var navHtml;
+    if(S.currentRA){
+      var ra = raById(S.currentRA);
+      var subtabs = [
+        ["rahub","Resum"], ["teoria","Teoria"], ["quiz","Test ràpid"], ["cases","Casos pràctics"],
+        ["wordsearch","Sopa de lletres"], ["speed","Repte contra rellotge"], ["video","Vídeo"],
+        ["memory","Aparella conceptes"], ["classify","Classifica contra rellotge"], ["offer","Construeix l'oferta"], ["escape","Escape room"]
+      ];
+      navHtml = '<button class="vt-backlink vt-crumb" data-action="go-dashboard">&larr; Tots els resultats d\'aprenentatge</button>'
+        + '<div class="vt-nav">' + subtabs.map(function(t){
+            return '<button class="vt-navbtn'+(S.view===t[0]?' active':'')+'" data-action="go-'+t[0]+'">'+t[1]+'</button>';
+          }).join("") + '</div>';
+    } else {
+      var unreadCount = st.messages.filter(function(m){ return !m.read; }).length;
+      var tabs = [["dashboard","Despatx"], ["nomina","Nòmina"], ["messages", unreadCount>0 ? ("Missatges ("+unreadCount+")") : "Missatges"], ["badges","Insígnies"], ["roulette","Ruleta diària"]];
+      navHtml = '<div class="vt-nav">' + tabs.map(function(t){
+          return '<button class="vt-navbtn'+(S.view===t[0]?' active':'')+'" data-action="go-'+t[0]+'">'+t[1]+'</button>';
+        }).join("") + '</div>';
+    }
+
+    return ''
+    + '<div class="vt-shell">'
+      + (S.teacherPeekMode ? ('<div class="vt-peekbanner"><span>👁 Mode professora: veient el perfil de '+esc(st.name)+' tal com el veu ell/ella. No es desarà cap canvi.</span><button data-action="teacher-peek-exit">Tornar al llistat</button></div>') : '')
+      + '<div class="vt-topbar">'
+        + '<div class="vt-idblock"><div class="vt-avatar">'+initials(st.name)+'</div>'
+          + '<div class="vt-idtext"><div class="vt-name">'+esc(st.name)+'</div>'
+          + '<div class="vt-meta">Núm. d\'agent <span class="vt-empno">'+employeeNumber(S.slug)+'</span> · alta '+st.createdAt+'</div></div></div>'
+        + '<div class="vt-paybox"><div class="vt-paylabel">Nòmina acumulada</div><div class="vt-payfig">'+euro(st.balance)+'</div><div class="vt-level">'+lv.title+'</div></div>'
+        + (S.teacherPeekMode
+          ? '<button class="vt-btn vt-btn-ghost" data-action="teacher-peek-exit">Tornar al llistat</button>'
+          : '<button class="vt-btn vt-btn-ghost" data-action="logout">Fitxar sortida</button>')
+      + '</div>'
+      + '<div class="vt-progresswrap"><div class="vt-progresstop"><span>'+lv.title+'</span><span>'+(lv.next ? (lv.nextRA && lv.nextRA.active ? ("Supera RA"+lv.nextRA.num+" per pujar a "+lv.next.title) : "Disponible quan s'obri el següent RA") : "Nivell màxim assolit")+'</span></div>'
+        + '<div class="vt-track"><div class="vt-fill" style="width:'+lv.pct+'%"></div></div></div>'
+      + navHtml
+      + '<div class="vt-content">'+renderScreen()+'</div>'
+    + '</div>';
+  }
+
+  function renderScreen(){
+    switch(S.view){
+      case 'dashboard': return renderDashboard();
+      case 'rahub': return renderRAHub();
+      case 'teoria': return renderTeoria();
+      case 'quiz': return renderQuiz();
+      case 'cases': return renderCases();
+      case 'wordsearch': return renderWordsearch();
+      case 'speed': return renderSpeed();
+      case 'video': return renderVideo();
+      case 'memory': return renderMemory();
+      case 'classify': return renderClassify();
+      case 'offer': return renderOffer();
+      case 'escape': return renderEscape();
+      case 'nomina': return renderNomina();
+      case 'messages': return renderMessages();
+      case 'badges': return renderBadges();
+      case 'roulette': return renderRoulette();
+      default: return renderDashboard();
+    }
+  }
+
+  function renderDashboard(){
+    var st = S.student;
+    var lv = levelInfo(st);
+    var cardsHtml = RAS.map(function(ra){
+      var tint = hexToRgba(ra.color, .08);
+      var textOnColor = idealTextColor(ra.color);
+      return '<div class="vt-racard'+(ra.active?'':' vt-ralocked')+'" style="border-left:5px solid '+ra.color+'; background:'+tint+';">'
+        + '<span class="vt-ranum" style="background:'+ra.color+'; color:'+textOnColor+';">RA'+ra.num+'</span>'
+        + '<div class="vt-ratitle">'+esc(ra.short)+'</div>'
+        + '<p class="vt-radesc">'+esc(ra.full)+'</p>'
+        + '<div class="vt-rafoot">'
+          + (ra.active
+            ? '<button class="vt-rabtn" style="background:'+ra.color+'; color:'+textOnColor+';" data-action="open-ra" data-id="'+ra.id+'">Entrar</button>'
+            : '<span class="vt-rasoon">Pròximament, encara no disponible</span>')
+        + '</div>'
+      + '</div>';
+    }).join("");
+    var heroSvg = ''
+      + '<svg viewBox="0 0 220 140" width="150" height="96" style="flex:0 0 auto;" aria-hidden="true">'
+        + '<rect x="10" y="108" width="42" height="24" rx="3" fill="var(--paper-2)" stroke="var(--line)"/>'
+        + '<rect x="54" y="86" width="42" height="46" rx="3" fill="rgba(226,172,31,.22)" stroke="var(--mustard)"/>'
+        + '<rect x="98" y="60" width="42" height="72" rx="3" fill="rgba(47,143,130,.18)" stroke="var(--teal)"/>'
+        + '<rect x="142" y="30" width="42" height="102" rx="3" fill="rgba(63,132,82,.18)" stroke="var(--sage)"/>'
+        + '<circle cx="163" cy="16" r="9" fill="var(--ink)"/>'
+        + '<rect x="156" y="25" width="14" height="22" rx="6" fill="var(--ink)"/>'
+        + '<rect x="172" y="34" width="13" height="10" rx="2" fill="var(--mustard)"/>'
+        + '<rect x="176" y="31" width="5" height="4" fill="none" stroke="var(--ink)" stroke-width="1.5"/>'
+        + '<g transform="translate(198,14)"><rect x="-1.5" y="-8" width="3" height="16" fill="var(--rust)" opacity=".8"/><rect x="-8" y="-1.5" width="16" height="3" fill="var(--rust)" opacity=".8"/></g>'
+      + '</svg>';
+    var unreadHtml = st.messages.map(function(m, idx){
+      if(m.read) return '';
+      return '<div class="vt-msgcard"><div class="vt-msgtext">📩 '+esc(m.text)+'</div>'
+        + '<div class="vt-msgfoot"><span>'+esc(m.date)+' · La teva professora</span><button data-action="msg-read" data-idx="'+idx+'">D\'acord, gràcies!</button></div></div>';
+    }).join("");
+    return ''
+    + unreadHtml
+    + '<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">'
+      + '<div style="flex:1;min-width:220px;">'
+        + '<h2 style="font-size:20px;margin-bottom:4px;">El teu expedient com a agent comercial</h2>'
+        + '<p style="color:var(--ink-2);font-size:14px;">Cada repte que superes suma diners a la teva nòmina fictícia i et fa pujar de categoria: de l\'oficina de pràctiques fins a Cap d\'agents comercials.</p>'
+      + '</div>'
+      + heroSvg
+    + '</div>'
+    + renderLadder({light:true, current: lv.title})
+    + '<h3 style="font-size:14px;color:var(--ink-2);margin-bottom:2px;">Tria un resultat d\'aprenentatge per començar</h3>'
+    + '<div class="vt-ragrid">'+cardsHtml+'</div>';
+  }
+
+  function renderRAHub(){
+    var st = S.student;
+    var ra = raById(S.currentRA) || RAS[0];
+    var quizDone = st.quiz.correctIds.length, quizTotal = QUIZ.length;
+    var casesDone = st.cases.correctIds.length, casesTotal = CASES.length;
+    var pictoDone = st.pictoQuiz.correctIds.length, pictoTotal = PICTO_QUIZ.length;
+    var steps = [
+      {num:1, done:false, color:'var(--ink-2)', title:"Teoria", desc:"Repassa els apunts dels 4 blocs abans de posar-te a prova.",
+        status:"Material de consulta", statusColor:'var(--ink-2)', action:"go-teoria", btn:"Obrir apunts"},
+      {num:2, done:(quizDone===quizTotal), color:'var(--mustard)', title:"Test ràpid", desc:"20 preguntes sobre el producte industrial, el mercat i els seus atributs. 15 € per encert.",
+        status:quizDone+"/"+quizTotal+" preguntes superades", statusColor:(quizDone===quizTotal?'var(--sage)':'var(--ink-2)'), action:"go-quiz", btn:"Fitxar la tasca"},
+      {num:3, done:(casesDone===casesTotal), color:'var(--teal)', title:"Casos pràctics", desc:"Situacions reals de clients i atributs de producte. 25 € per encert.",
+        status:casesDone+"/"+casesTotal+" casos resolts", statusColor:(casesDone===casesTotal?'var(--sage)':'var(--ink-2)'), action:"go-cases", btn:"Fitxar la tasca"},
+      {num:4, done:st.wordsearch.done, color:'var(--sage)', title:"Sopa de lletres", desc:"Troba 12 paraules clau del vocabulari de la venda industrial. 100 € de prima única.",
+        status:(st.wordsearch.done?"Completada":"Pendent"), statusColor:(st.wordsearch.done?'var(--sage)':'var(--ink-2)'), action:"go-wordsearch", btn:"Fitxar la tasca"},
+      {num:5, done:false, color:'var(--rust)', title:"Repte contra rellotge", desc:"Vertader o fals, 30 segons, 8 € per resposta correcta.",
+        status:"Millor marca: "+st.speed.best+" encerts", statusColor:'var(--ink-2)', action:"go-speed", btn:"Fitxar la tasca"},
+      {num:6, done:(pictoDone===pictoTotal), color:'#3D6FA8', title:"Vídeo: pictogrames de perillositat", desc:"Mira el vídeo sobre seguretat química i respon la prova pràctica. 20 € per encert.",
+        status:pictoDone+"/"+pictoTotal+" respostes superades", statusColor:(pictoDone===pictoTotal?'var(--sage)':'var(--ink-2)'), action:"go-video", btn:"Fitxar la tasca"},
+      {num:7, done:!!st.memory.done, color:'#7B5CA6', title:"Aparella conceptes", desc:"Joc de memòria: troba les 8 parelles de conceptes i definicions. 80 € en completar-lo.",
+        status:(st.memory.done?"Completat":"Pendent"), statusColor:(st.memory.done?'var(--sage)':'var(--ink-2)'), action:"go-memory", btn:"Fitxar la tasca"},
+      {num:8, done:false, color:'#C9578A', title:"Classifica contra rellotge", desc:"30 segons per classificar clients i canals de compra. 10 € per encert.",
+        status:"Millor marca: "+st.classify.best+" encerts", statusColor:'var(--ink-2)', action:"go-classify", btn:"Fitxar la tasca"},
+      {num:9, done:(st.offerGame.doneScenarios.length===OFFER_SCENARIOS.length), color:'var(--mustard-dark)', title:"Construeix la teva oferta", desc:"Tria els arguments que millor encaixen amb cada perfil de client. Fins a 45 € per client.",
+        status:st.offerGame.doneScenarios.length+"/"+OFFER_SCENARIOS.length+" clients atesos", statusColor:(st.offerGame.doneScenarios.length===OFFER_SCENARIOS.length?'var(--sage)':'var(--ink-2)'), action:"go-offer", btn:"Fitxar la tasca"},
+      {num:10, done:st.escapeClaimed, color:'var(--ink)', title:"Escape room de RA1", desc:"Supera totes les proves anteriors i desbloqueja la recompensa final.",
+        status:(st.escapeClaimed?"Recompensa reclamada":"Pendent"), statusColor:(st.escapeClaimed?'var(--sage)':'var(--ink-2)'), action:"go-escape", btn:"Obrir l'escape room"}
+    ];
+    var stepsHtml = steps.map(function(s){
+      return '<div class="vt-roadstep'+(s.done?' vt-roaddone':'')+'" data-num="'+s.num+'" style="border-left-color:'+s.color+';">'
+        + '<div class="vt-roadhead"><h3>'+esc(s.title)+'</h3><span class="vt-roadstatus" style="color:'+s.statusColor+';">'+esc(s.status)+'</span></div>'
+        + '<p class="vt-roaddesc">'+esc(s.desc)+'</p>'
+        + '<button class="vt-go" data-action="'+s.action+'">'+esc(s.btn)+'</button>'
+      + '</div>';
+    }).join("");
+    return ''
+    + '<div class="vt-rabanner"><strong>RA'+ra.num+'.</strong> '+esc(ra.full)+'</div>'
+    + '<div class="vt-roadmap">'+stepsHtml+'</div>';
+  }
+
+  function renderQuiz(){
+    if(S.quiz.index >= QUIZ.length){
+      return '<div class="vt-empty"><h3 style="margin-bottom:10px;">Has completat totes les preguntes del test!</h3>'
+        + '<p style="margin-bottom:16px;">Pots repassar-lo tantes vegades com vulguis.</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="quiz-restart">Tornar a començar</button> '
+        + '<button class="vt-btn vt-btn-ghost" data-action="go-rahub">Tornar al resum</button></div>';
+    }
+    var q = QUIZ[S.quiz.index];
+    var already = S.student.quiz.correctIds.indexOf(S.quiz.index) !== -1;
+    var isCorrect = S.quiz.selected===q.correct;
+    var optsHtml = q.opts.map(function(opt, i){
+      var cls = 'vt-opt';
+      if(S.quiz.answered){
+        if(i===q.correct) cls += ' vt-correct';
+        else if(i===S.quiz.selected) cls += ' vt-wrong';
+      }
+      return '<button class="'+cls+'" data-action="quiz-answer" data-idx="'+i+'" '+(S.quiz.answered?'disabled':'')+'>'+esc(opt)+'</button>';
+    }).join("");
+    return ''
+    + '<div class="vt-qhead"><h2>Test ràpid</h2><span class="vt-qcount">Pregunta '+(S.quiz.index+1)+' de '+QUIZ.length+(already?' · ja superada':'')+'</span></div>'
+    + '<div class="vt-qtext">'+esc(q.q)+'</div>'
+    + '<div class="vt-optsbox"><div class="vt-opts">'+optsHtml+'</div></div>'
+    + (S.quiz.answered ? (
+        '<div class="vt-feedback '+(isCorrect?'vt-good':'vt-bad')+'"><strong>'+(isCorrect ? "✓ Resposta correcta. " : "✗ Resposta incorrecta. ")+'</strong>'
+          + (isCorrect ? '' : ('La resposta correcta és: “'+esc(q.opts[q.correct])+'”. '))
+          + esc(q.tip)+'</div>'
+        + '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><button class="vt-btn vt-btn-primary" data-action="quiz-next">Següent pregunta</button></div>'
+      ) : '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><span></span></div>');
+  }
+
+  function renderCases(){
+    if(S.cases.index >= CASES.length){
+      return '<div class="vt-empty"><h3 style="margin-bottom:10px;">Has resolt tots els casos pràctics!</h3>'
+        + '<p style="margin-bottom:16px;">Pots tornar a intentar-los quan vulguis per repassar.</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="cases-restart">Tornar a començar</button> '
+        + '<button class="vt-btn vt-btn-ghost" data-action="go-rahub">Tornar al resum</button></div>';
+    }
+    var q = CASES[S.cases.index];
+    var already = S.student.cases.correctIds.indexOf(S.cases.index) !== -1;
+    var isCorrectC = S.cases.selected===q.correct;
+    var optsHtml = q.opts.map(function(opt, i){
+      var cls = 'vt-opt';
+      if(S.cases.answered){
+        if(i===q.correct) cls += ' vt-correct';
+        else if(i===S.cases.selected) cls += ' vt-wrong';
+      }
+      return '<button class="'+cls+'" data-action="case-answer" data-idx="'+i+'" '+(S.cases.answered?'disabled':'')+'>'+esc(opt)+'</button>';
+    }).join("");
+    return ''
+    + '<div class="vt-qhead"><h2>Cas pràctic</h2><span class="vt-qcount">Cas '+(S.cases.index+1)+' de '+CASES.length+(already?' · ja superat':'')+'</span></div>'
+    + '<div class="vt-qtext">'+esc(q.q)+'</div>'
+    + '<div class="vt-optsbox"><div class="vt-opts">'+optsHtml+'</div></div>'
+    + (S.cases.answered ? (
+        '<div class="vt-feedback '+(isCorrectC?'vt-good':'vt-bad')+'"><strong>'+(isCorrectC ? "✓ Resposta correcta. " : "✗ Resposta incorrecta. ")+'</strong>'
+          + (isCorrectC ? '' : ('La resposta correcta és: “'+esc(q.opts[q.correct])+'”. '))
+          + esc(q.tip)+'</div>'
+        + '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><button class="vt-btn vt-btn-primary" data-action="case-next">Següent cas</button></div>'
+      ) : '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><span></span></div>');
+  }
+
+  function renderWordsearch(){
+    if(!S.wsGame){ S.wsGame = buildWordSearch(); }
+    var g = S.wsGame;
+    var foundWords = g.found.map(function(f){ return f.word; });
+    var gridHtml = '<div class="vt-ws-grid" style="grid-template-columns:repeat('+WS_SIZE+',26px);">';
+    for(var r=0;r<WS_SIZE;r++){
+      for(var c=0;c<WS_SIZE;c++){
+        var cls = 'vt-ws-cell';
+        var inFound = g.found.some(function(f){
+          return f.cells.some(function(cell){ return cell.row===r && cell.col===c; });
+        });
+        if(inFound) cls += ' vt-found';
+        else if(g.selStart && g.selStart.row===r && g.selStart.col===c) cls += ' vt-sel';
+        gridHtml += '<div class="'+cls+'" data-action="ws-cell" data-row="'+r+'" data-col="'+c+'">'+g.grid[r][c]+'</div>';
+      }
+    }
+    gridHtml += '</div>';
+    var listHtml = '<ul class="vt-ws-list">' + WS_WORDS.map(function(w){
+      return '<li class="'+(foundWords.indexOf(w.grid)!==-1?'vt-found':'')+'">'+esc(w.label)+'</li>';
+    }).join("") + '</ul>';
+    var allDone = g.found.length === WS_WORDS.length;
+    return ''
+    + '<div class="vt-qhead"><h2>Sopa de lletres</h2><span class="vt-qcount">'+g.found.length+'/'+WS_WORDS.length+' trobades</span></div>'
+    + '<p style="font-size:13.5px;color:var(--ink-2);margin-bottom:14px;">Toca la primera lletra d\'una paraula i després l\'última, en línia recta (horitzontal, vertical o diagonal).</p>'
+    + '<div class="vt-ws-wrap">'+gridHtml+listHtml+'</div>'
+    + (allDone ? '<div class="vt-feedback vt-good" style="margin-top:18px;">Molt bé, les has trobat totes!</div>' : '')
+    + '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button>'
+      + '<button class="vt-btn vt-btn-ghost" data-action="ws-restart">Nova sopa de lletres</button></div>';
+  }
+
+  function renderSpeed(){
+    var g = S.speedGame;
+    if(!g || g.phase==='idle'){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Repte contra rellotge</h2>'
+        + '<p style="color:var(--ink-2);margin-bottom:18px;">Tens 30 segons per respondre tantes afirmacions com puguis. Vertader o fals? 8 € per cada encert.</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="speed-start">Començar el repte</button>'
+        + '<div style="margin-top:14px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div></div>';
+    }
+    if(g.phase==='done'){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:6px;">Temps esgotat!</h2>'
+        + '<p style="font-size:16px;margin-bottom:4px;">Encerts: <strong>'+g.correct+'</strong> · Errors: '+g.wrong+'</p>'
+        + '<p style="color:var(--teal);font-weight:700;font-size:18px;margin-bottom:18px;">Has guanyat '+euro(g.correct*8)+'</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="speed-start">Tornar-ho a intentar</button>'
+        + '<div style="margin-top:14px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div></div>';
+    }
+    var item = g.order[g.idx % g.order.length];
+    return ''
+    + '<div class="vt-timer">'+g.timeLeft+'s</div>'
+    + '<div class="vt-tfstatement">'+esc(item.s)+'</div>'
+    + '<div class="vt-tfrow"><button class="vt-tfbtn vt-true" data-action="speed-answer" data-val="true">Vertader</button>'
+      + '<button class="vt-tfbtn vt-false" data-action="speed-answer" data-val="false">Fals</button></div>'
+    + '<div class="vt-scoreline">Encerts: '+g.correct+' · Errors: '+g.wrong+'</div>';
+  }
+
+  function renderVideo(){
+    var st = S.student;
+    if(S.pictoQuiz.index >= PICTO_QUIZ.length){
+      return '<h2 style="margin-bottom:12px;">Vídeo: pictogrames de perillositat</h2>'
+        + '<div class="vt-empty"><h3 style="margin-bottom:10px;">Has completat la prova pràctica!</h3>'
+        + '<p style="margin-bottom:16px;">Pots repassar-la tantes vegades com vulguis.</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="picto-restart">Tornar a començar</button> '
+        + '<button class="vt-btn vt-btn-ghost" data-action="go-rahub">Tornar al resum</button></div>';
+    }
+    var q = PICTO_QUIZ[S.pictoQuiz.index];
+    var already = st.pictoQuiz.correctIds.indexOf(S.pictoQuiz.index) !== -1;
+    var isCorrectP = S.pictoQuiz.selected===q.correct;
+    var optsHtml = q.opts.map(function(opt, i){
+      var cls = 'vt-opt';
+      if(S.pictoQuiz.answered){
+        if(i===q.correct) cls += ' vt-correct';
+        else if(i===S.pictoQuiz.selected) cls += ' vt-wrong';
+      }
+      return '<button class="'+cls+'" data-action="picto-answer" data-idx="'+i+'" '+(S.pictoQuiz.answered?'disabled':'')+'>'+esc(opt)+'</button>';
+    }).join("");
+    return ''
+    + '<h2 style="margin-bottom:4px;">Vídeo: pictogrames de perillositat</h2>'
+    + '<p style="color:var(--ink-2);font-size:14px;margin-bottom:14px;">'+esc(VIDEO_INFO.desc)+'</p>'
+    + '<a href="'+VIDEO_INFO.url+'" target="_blank" rel="noopener" class="vt-videolink">▶ Veure "'+esc(VIDEO_INFO.title)+'" ('+VIDEO_INFO.minutes+' min, s\'obre en una pestanya nova)</a>'
+    + '<div class="vt-qhead" style="margin-top:20px;"><h2>Prova pràctica</h2><span class="vt-qcount">Pregunta '+(S.pictoQuiz.index+1)+' de '+PICTO_QUIZ.length+(already?' · ja superada':'')+'</span></div>'
+    + '<div class="vt-qtext">'+esc(q.q)+'</div>'
+    + '<div class="vt-optsbox"><div class="vt-opts">'+optsHtml+'</div></div>'
+    + (S.pictoQuiz.answered ? (
+        '<div class="vt-feedback '+(isCorrectP?'vt-good':'vt-bad')+'"><strong>'+(isCorrectP ? "✓ Resposta correcta. " : "✗ Resposta incorrecta. ")+'</strong>'
+          + (isCorrectP ? '' : ('La resposta correcta és: “'+esc(q.opts[q.correct])+'”. '))
+          + esc(q.tip)+'</div>'
+        + '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><button class="vt-btn vt-btn-primary" data-action="picto-next">Següent pregunta</button></div>'
+      ) : '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><span></span></div>');
+  }
+
+  /* ---------------- Aparella conceptes (memory) ---------------- */
+  function buildMemoryGame(){
+    var cards = [];
+    MEMORY_PAIRS.forEach(function(p, i){
+      cards.push({pairId:i, type:'term', text:p.term});
+      cards.push({pairId:i, type:'def', text:p.def});
+    });
+    cards = shuffle(cards);
+    return {cards:cards, flipped:[], matched:[], busy:false};
+  }
+
+  function renderMemory(){
+    if(!S.memoryGame) S.memoryGame = buildMemoryGame();
+    var g = S.memoryGame;
+    var allDone = g.matched.length === MEMORY_PAIRS.length;
+    var cardsHtml = g.cards.map(function(c, idx){
+      var isMatched = g.matched.indexOf(c.pairId) !== -1;
+      var isFlipped = g.flipped.indexOf(idx) !== -1;
+      var cls = 'vt-mem-card' + (isMatched ? ' vt-matched' : (isFlipped ? ' vt-flipped' : ''));
+      var shown = (isMatched || isFlipped) ? esc(c.text) : '?';
+      return '<button class="'+cls+'" data-action="memory-cell" data-idx="'+idx+'" '+((isMatched||g.busy)?'disabled':'')+'>'+shown+'</button>';
+    }).join("");
+    return ''
+    + '<div class="vt-qhead"><h2>Aparella conceptes</h2><span class="vt-qcount">'+g.matched.length+'/'+MEMORY_PAIRS.length+' parelles</span></div>'
+    + '<p style="font-size:13.5px;color:var(--ink-2);margin-bottom:14px;">Toca dues cartes: si un concepte i la seva definició coincideixen, es queden descobertes.</p>'
+    + '<div class="vt-mem-grid">'+cardsHtml+'</div>'
+    + (allDone ? '<div class="vt-feedback vt-good" style="margin-top:16px;">Molt bé, les has aparellat totes!</div>' : '')
+    + '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button>'
+      + '<button class="vt-btn vt-btn-ghost" data-action="memory-restart">Nova partida</button></div>';
+  }
+
+  /* ---------------- Classifica contra rellotge ---------------- */
+  function renderClassify(){
+    var g = S.classifyGame;
+    if(!g || g.phase==='idle'){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Classifica contra rellotge</h2>'
+        + '<p style="color:var(--ink-2);margin-bottom:18px;">Tens 30 segons per classificar tantes frases com puguis: fabricant, usuari, intermediari, detall, engròs o institucional. 10 € per encert.</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="classify-start">Començar el repte</button>'
+        + '<div style="margin-top:14px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div></div>';
+    }
+    if(g.phase==='done'){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:6px;">Temps esgotat!</h2>'
+        + '<p style="font-size:16px;margin-bottom:4px;">Encerts: <strong>'+g.correct+'</strong> · Errors: '+g.wrong+'</p>'
+        + '<p style="color:var(--teal);font-weight:700;font-size:18px;margin-bottom:18px;">Has guanyat '+euro(g.correct*10)+'</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="classify-start">Tornar-ho a intentar</button>'
+        + '<div style="margin-top:14px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div></div>';
+    }
+    var item = g.order[g.idx % g.order.length];
+    var optsHtml = item.opts.map(function(o, i){
+      return '<button class="vt-opt" data-action="classify-answer" data-idx="'+i+'">'+esc(o)+'</button>';
+    }).join("");
+    return ''
+    + '<div class="vt-timer">'+g.timeLeft+'s</div>'
+    + '<div class="vt-tfstatement">'+esc(item.phrase)+'</div>'
+    + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'+optsHtml+'</div>'
+    + '<div class="vt-scoreline">Encerts: '+g.correct+' · Errors: '+g.wrong+'</div>';
+  }
+
+  /* ---------------- Construeix la teva oferta ---------------- */
+  function renderOffer(){
+    var st = S.student;
+    if(S.offerGame.index >= OFFER_SCENARIOS.length){
+      return '<div class="vt-empty"><h3 style="margin-bottom:10px;">Has atès tots els clients!</h3>'
+        + '<p style="margin-bottom:16px;">Pots repassar-ho tantes vegades com vulguis.</p>'
+        + '<button class="vt-btn vt-btn-primary" data-action="offer-restart">Tornar a començar</button> '
+        + '<button class="vt-btn vt-btn-ghost" data-action="go-rahub">Tornar al resum</button></div>';
+    }
+    var sc = OFFER_SCENARIOS[S.offerGame.index];
+    var checked = S.offerGame.checked || false;
+    var sel = S.offerGame.selected || {};
+    var cardsHtml = sc.cards.map(function(c, i){
+      var isSel = !!sel[i];
+      var cls = 'vt-opt' + (isSel ? ' vt-offer-sel' : '');
+      if(checked){
+        if(c.fit && isSel) cls += ' vt-correct';
+        else if(!c.fit && isSel) cls += ' vt-wrong';
+        else if(c.fit && !isSel) cls += ' vt-missed';
+      }
+      return '<button class="'+cls+'" data-action="offer-toggle" data-idx="'+i+'" '+(checked?'disabled':'')+'>'+esc(c.label)+'</button>';
+    }).join("");
+    var already = S.student.offerGame.doneScenarios.indexOf(S.offerGame.index) !== -1;
+    return ''
+    + '<div class="vt-qhead"><h2>Construeix la teva oferta</h2><span class="vt-qcount">Client '+(S.offerGame.index+1)+' de '+OFFER_SCENARIOS.length+(already?' · ja atès':'')+'</span></div>'
+    + '<div class="vt-qtext">'+esc(sc.client)+'</div>'
+    + '<p style="font-size:13px;color:var(--ink-2);margin-bottom:10px;">Selecciona les cartes que millor encaixin amb aquest client.</p>'
+    + '<div class="vt-optsbox"><div class="vt-opts">'+cardsHtml+'</div></div>'
+    + (checked ? (
+        '<div class="vt-feedback vt-good" style="margin-top:12px;">Verd = encert, vermell = no encaixa, groc = te n\'has deixat una.</div>'
+        + '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><button class="vt-btn vt-btn-primary" data-action="offer-next">Següent client</button></div>'
+      ) : '<div class="vt-rowend"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button><button class="vt-btn vt-btn-primary" data-action="offer-check">Comprova l\'oferta</button></div>');
+  }
+
+  /* ---------------- Escape room ---------------- */
+  function renderEscape(){
+    var st = S.student;
+    var quizDone = st.quiz.correctIds.length === QUIZ.length;
+    var casesDone = st.cases.correctIds.length === CASES.length;
+    var wsDone = st.wordsearch.done;
+    var pictoDone = st.pictoQuiz.correctIds.length === PICTO_QUIZ.length;
+    var memDone = !!st.memory.done;
+    var stages = [
+      {label:"Clau 1 · Test ràpid superat", done:quizDone},
+      {label:"Clau 2 · Casos pràctics resolts", done:casesDone},
+      {label:"Clau 3 · Sopa de lletres completa", done:wsDone},
+      {label:"Clau 4 · Vídeo de pictogrames superat", done:pictoDone},
+      {label:"Clau 5 · Aparella conceptes completat", done:memDone}
+    ];
+    var allDone = stages.every(function(s){ return s.done; });
+    var stagesHtml = stages.map(function(s, i){
+      return '<div class="vt-roadstep'+(s.done?' vt-roaddone':'')+'" data-num="'+(s.done?'✓':'🔒')+'" style="border-left-color:'+(s.done?'var(--sage)':'var(--line)')+';">'
+        + '<div class="vt-roadhead"><h3>'+esc(s.label)+'</h3><span class="vt-roadstatus" style="color:'+(s.done?'var(--sage)':'var(--ink-2)')+';">'+(s.done?'Desbloquejada':'Bloquejada')+'</span></div>'
+      + '</div>';
+    }).join("");
+    return ''
+    + '<h2 style="margin-bottom:4px;">Escape room de RA1</h2>'
+    + '<p style="color:var(--ink-2);font-size:14px;margin-bottom:14px;">Aconsegueix les 5 claus completant les proves del RA1 (en qualsevol ordre) per obrir la recompensa final.</p>'
+    + '<div class="vt-roadmap">'+stagesHtml+'</div>'
+    + (st.escapeClaimed
+      ? '<div class="vt-feedback vt-good">Ja has reclamat la recompensa final d\'aquest escape room. Bona feina, agent!</div>'
+      : (allDone
+          ? '<div class="vt-feedback vt-good" style="margin-bottom:14px;">Has aconseguit les 5 claus! Reclama la teva recompensa.</div>'
+            + '<button class="vt-btn vt-btn-primary" data-action="escape-claim">Reclamar recompensa (150 €)</button>'
+          : '<div class="vt-feedback vt-bad">Encara et falten claus per obrir. Completa les proves pendents des del resum del RA1.</div>'))
+    + '<div style="margin-top:18px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div>';
+  }
+
+  /* ---------------- Insígnies ---------------- */
+  function renderBadges(){
+    var st = S.student;
+    var cardsHtml = BADGES.map(function(b){
+      var unlocked = b.check(st);
+      return '<div class="vt-badge'+(unlocked?' vt-badge-unlocked':'')+'">'
+        + '<div class="vt-badge-icon">'+b.icon+'</div>'
+        + '<div class="vt-badge-title">'+esc(b.title)+'</div>'
+        + '<div class="vt-badge-desc">'+esc(b.desc)+'</div>'
+        + '<div class="vt-badge-status">'+(unlocked?'Desbloquejada':'Bloquejada')+'</div>'
+      + '</div>';
+    }).join("");
+    var unlockedCount = BADGES.filter(function(b){ return b.check(st); }).length;
+    return ''
+    + '<h2 style="margin-bottom:4px;">Insígnies</h2>'
+    + '<p style="color:var(--ink-2);font-size:14px;margin-bottom:14px;">'+unlockedCount+'/'+BADGES.length+' insígnies desbloquejades.</p>'
+    + '<div class="vt-badgegrid">'+cardsHtml+'</div>'
+    + '<div style="margin-top:18px;"><button class="vt-backlink" data-action="go-dashboard">Tornar al despatx</button></div>';
+  }
+
+  /* ---------------- Ruleta diària ---------------- */
+  function todayStr(){
+    var d = new Date();
+    return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  }
+
+  function renderRoulette(){
+    var st = S.student;
+    var g = S.rouletteGame;
+    var alreadySpunToday = st.roulette.lastDate === todayStr();
+    var wheelCls = 'vt-wheel' + (g.spinning ? ' vt-wheel-spinning' : '');
+    if(alreadySpunToday && !g.question){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Ruleta diària</h2>'
+        + '<div class="'+wheelCls+'"></div>'
+        + '<p style="color:var(--ink-2);margin:16px 0;">Ja has girat la ruleta avui. Torna demà per a una nova oportunitat!</p>'
+        + '<button class="vt-backlink" data-action="go-dashboard">Tornar al despatx</button></div>';
+    }
+    if(g.spinning){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Ruleta diària</h2>'
+        + '<div class="'+wheelCls+'"></div>'
+        + '<p style="color:var(--ink-2);margin-top:16px;">Girant...</p></div>';
+    }
+    if(g.question && !g.answered){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Ruleta diària</h2>'
+        + '<div class="'+wheelCls+'"></div>'
+        + '<div class="vt-tfstatement" style="margin-top:18px;">'+esc(g.question.s)+'</div>'
+        + '<div class="vt-tfrow"><button class="vt-tfbtn vt-true" data-action="roulette-answer" data-val="true">Vertader</button>'
+          + '<button class="vt-tfbtn vt-false" data-action="roulette-answer" data-val="false">Fals</button></div></div>';
+    }
+    if(g.answered){
+      return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Ruleta diària</h2>'
+        + '<div class="'+wheelCls+'"></div>'
+        + '<div class="vt-feedback '+(g.wasCorrect?'vt-good':'vt-bad')+'" style="margin-top:16px;">'+(g.wasCorrect ? ("Encertat! Has guanyat "+euro(g.won)+".") : "Aquesta vegada no, però torna demà per una nova ronda.")+'</div>'
+        + '<div style="margin-top:14px;"><button class="vt-backlink" data-action="go-dashboard">Tornar al despatx</button></div></div>';
+    }
+    return '<div class="vt-speed-intro"><h2 style="margin-bottom:10px;">Ruleta diària</h2>'
+      + '<p style="color:var(--ink-2);margin-bottom:18px;">Un gir al dia, una pregunta ràpida i un petit bonus si l\'encertes.</p>'
+      + '<div class="'+wheelCls+'"></div>'
+      + '<button class="vt-btn vt-btn-primary" style="margin-top:20px;" data-action="roulette-spin">Girar la ruleta</button>'
+      + '<div style="margin-top:14px;"><button class="vt-backlink" data-action="go-dashboard">Tornar al despatx</button></div></div>';
+  }
+
+  function renderTeoria(){
+    if(!S.teoriaOpen) S.teoriaOpen = {};
+    var html = '<h2 style="margin-bottom:4px;">Apunts de RA1</h2>'
+      + '<p style="color:var(--ink-2);font-size:14px;margin-bottom:16px;">Repassa cada apartat abans de fer el test o els casos pràctics. Toca un títol per obrir-lo o tancar-lo.</p>';
+    TEORIA.forEach(function(bloc, bi){
+      html += '<div class="vt-bloc-title">'+esc(bloc.bloc)+'</div>';
+      bloc.items.forEach(function(item, ii){
+        var id = bi+'-'+ii;
+        var open = !!S.teoriaOpen[id];
+        html += '<div class="vt-accitem">'
+          + '<button class="vt-acchead" data-action="teoria-toggle" data-id="'+id+'">'+esc(item.t)+'<span class="vt-accmark">'+(open?'−':'+')+'</span></button>'
+          + (open ? ('<div class="vt-accbody"><p>'+esc(item.p)+'</p>'+(item.p2?('<p>'+esc(item.p2)+'</p>'):'')+'</div>') : '')
+          + '</div>';
+      });
+    });
+    html += '<div style="margin-top:18px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div>';
+    return html;
+  }
+
+  function renderActivitats(){
+    if(!S.actOpen) S.actOpen = {};
+    var html = '<h2 style="margin-bottom:4px;">Activitats de classe — RA1</h2>'
+      + '<p style="color:var(--ink-2);font-size:14px;margin-bottom:16px;">Aquestes són les activitats programades per la teva professora. Es lliuren fora d\'aquesta plataforma; aquí les tens només com a referència ràpida.</p>';
+    ACTIVITIES.forEach(function(act){
+      var open = !!S.actOpen[act.num];
+      html += '<div class="vt-actcard">'
+        + '<button class="vt-acthead" data-action="act-toggle" data-id="'+act.num+'">'
+          + '<span><span class="vt-actnum">Activitat '+act.num+'</span><br/><strong>'+esc(act.title)+'</strong><br/><span style="font-size:13px;color:var(--ink-2);">'+esc(act.desc)+'</span></span>'
+          + '<span><span class="vt-actbloc">'+esc(act.bloc)+'</span><br/><span class="vt-accmark">'+(open?'−':'+')+'</span></span>'
+        + '</button>'
+        + (open ? ('<div class="vt-actbody">'+esc(act.detail)+'</div>') : '')
+        + '</div>';
+    });
+    html += '<div style="margin-top:18px;"><button class="vt-backlink" data-action="go-rahub">Tornar al resum</button></div>';
+    return html;
+  }
+
+  function monthYearLabel(){
+    var d = new Date();
+    var s = d.toLocaleDateString('ca-ES', {month:'long', year:'numeric'});
+    return s.charAt(0).toUpperCase()+s.slice(1);
+  }
+
+  function renderNomina(){
+    var st = S.student;
+    var lv = levelInfo(st);
+    var rows = st.history.map(function(h){
+      return '<tr><td>'+esc(h.date)+'</td><td>'+esc(h.concept)+'</td><td class="vt-amt">+'+h.amount+' €</td></tr>';
+    }).join("");
+    return ''
+    + '<h2 style="margin-bottom:14px;">Full de nòmina</h2>'
+    + '<div class="vt-payhead">'
+      + '<div class="vt-ph-block"><strong>Venda Tècnica S.A.</strong><div>Departament Comercial<br/>'+esc(monthYearLabel())+'</div></div>'
+      + '<div class="vt-ph-block"><strong>'+esc(st.name)+'</strong><div>Agent núm. '+employeeNumber(S.slug)+'<br/>Categoria: '+esc(lv.title)+'<br/>Alta: '+st.createdAt+'</div></div>'
+    + '</div>'
+    + (st.history.length===0
+      ? '<div class="vt-empty">Encara no has cobrat res. Completa alguna tasca d\'un RA per començar a guanyar la teva nòmina.</div>'
+      : ''
+        + '<div class="vt-paysection">Meritacions</div>'
+        + '<table class="vt-table"><thead><tr><th>Data</th><th>Concepte retributiu</th><th>Import</th></tr></thead><tbody>'+rows+'</tbody></table>'
+        + '<div class="vt-deductrow"><span>Total brut</span><span>'+euro(st.balance)+'</span></div>'
+        + '<div class="vt-deductrow"><span>Retencions i impostos (IRPF)</span><span>0 € — per ara, els diners són tot teus</span></div>'
+        + '<div class="vt-liquid"><span>Líquid a percebre</span><span>'+euro(st.balance)+'</span></div>')
+    + '<div style="margin-top:18px;"><button class="vt-backlink" data-action="go-dashboard">Tornar al despatx</button></div>';
+  }
+
+  function renderMessages(){
+    var st = S.student;
+    var msgs = st.messages || [];
+    var rows = msgs.map(function(m, idx){
+      return '<div class="vt-msgrow">'
+        + '<div><div style="font-size:14px;line-height:1.5;">'+esc(m.text)+(m.read?'':' <span class="vt-msgbadge">Nou</span>')+'</div>'
+          + '<div style="font-size:11.5px;color:var(--ink-2);margin-top:4px;">'+esc(m.date)+' · La teva professora</div></div>'
+        + (m.read ? '' : '<button class="vt-msgbtn" data-action="msg-read" data-idx="'+idx+'">Marcar com llegit</button>')
+      + '</div>';
+    }).join("");
+    return ''
+    + '<h2 style="margin-bottom:14px;">Missatges de la professora</h2>'
+    + (msgs.length===0
+      ? '<div class="vt-empty">Encara no tens cap missatge.</div>'
+      : '<div class="vt-summarycard" style="padding:0;">'+rows+'</div>')
+    + '<div style="margin-top:18px;"><button class="vt-backlink" data-action="go-dashboard">Tornar al despatx</button></div>';
+  }
+
+  /* ---------------- actions ---------------- */
+  function stopSpeedTimer(){
+    if(S.speedGame && S.speedGame.intervalId){ clearInterval(S.speedGame.intervalId); S.speedGame.intervalId=null; }
+  }
+  function stopClassifyTimer(){
+    if(S.classifyGame && S.classifyGame.intervalId){ clearInterval(S.classifyGame.intervalId); S.classifyGame.intervalId=null; }
+  }
+
+  function goto(view){
+    if(view!=='speed') stopSpeedTimer();
+    if(view!=='classify') stopClassifyTimer();
+    S.view = view;
+    if(view==='dashboard' || view==='nomina' || view==='messages' || view==='badges' || view==='roulette'){ S.currentRA = null; }
+    if(view==='quiz'){ S.quiz = {index:0, answered:false, selected:null}; }
+    if(view==='cases'){ S.cases = {index:0, answered:false, selected:null}; }
+    if(view==='video'){ S.pictoQuiz = {index:0, answered:false, selected:null}; }
+    if(view==='wordsearch'){ S.wsGame = null; }
+    if(view==='speed'){ S.speedGame = {phase:'idle', timeLeft:30, order:[], idx:0, correct:0, wrong:0, intervalId:null}; }
+    if(view==='memory'){ S.memoryGame = null; }
+    if(view==='classify'){ S.classifyGame = {phase:'idle', timeLeft:30, order:[], idx:0, correct:0, wrong:0, intervalId:null}; }
+    if(view==='offer'){ S.offerGame = {index:0, selected:{}}; }
+    if(view==='roulette'){ S.rouletteGame = {spinning:false, question:null, answered:false}; }
+    render();
+  }
+
+  function handleAction(action, btn){
+    if(action==='toggle-register'){ S.registerMode = !S.registerMode; S.loginError=''; render(); return; }
+    if(action==='go-teacher-login'){ S.view='teacherLogin'; S.teacherError=''; render(); return; }
+    if(action==='go-login'){ S.view='login'; render(); return; }
+
+    if(action==='login'){
+      var name = document.getElementById('vtName').value.trim();
+      var pin = document.getElementById('vtPin').value.trim();
+      if(!name || !pin){ S.loginError='Omple el nom i el PIN.'; render(); return; }
+      var slug = slugify(name);
+      var localLogin = function(offline){
+        var entry = S.registry.students[slug];
+        if(!entry){ S.loginError = offline ? 'No hi ha connexió amb el servidor. Torna-ho a provar.' : 'No existeix cap compte amb aquest nom. Crea\'n un de nou.'; render(); return; }
+        if(entry.pin !== pin){ S.loginError='PIN incorrecte.'; render(); return; }
+        S.slug = slug;
+        loadStudent(slug).then(function(data){
+          S.student = normalizeStudent(data) || newStudentData(entry.name);
+          S.loginError=''; goto('dashboard');
+        });
+      };
+      if(!cloudOn()){ localLogin(false); return; }
+      toast('Entrant...');
+      cloudCall({action:'get', slug:slug, pin:pin}).then(function(res){
+        if(!res){ localLogin(true); return; }
+        if(!res.ok){ S.loginError = (res.error==='pin') ? 'PIN incorrecte.' : 'No existeix cap compte amb aquest nom. Crea\'n un de nou.'; render(); return; }
+        var cdata = normalizeStudent(res.data) || newStudentData(res.name);
+        var added = mergeCloudMessages(cdata, res.messages);
+        S.registry.students[slug] = {name:res.name, pin:pin}; saveRegistry(S.registry);
+        S.slug = slug; S.student = cdata;
+        if(added){ saveStudent(slug, cdata); }
+        else { try { localStorage.setItem("student:"+slug, JSON.stringify(cdata)); } catch(e){} }
+        S.loginError=''; goto('dashboard');
+      });
+      return;
+    }
+
+    if(action==='register'){
+      var rname = document.getElementById('vtName').value.trim();
+      var rpin = document.getElementById('vtPin').value.trim();
+      var rpin2 = document.getElementById('vtPin2').value.trim();
+      if(!rname || !rpin){ S.loginError='Omple el nom i el PIN.'; render(); return; }
+      if(!/^[0-9]{4}$/.test(rpin)){ S.loginError='El PIN ha de tenir 4 xifres.'; render(); return; }
+      if(rpin!==rpin2){ S.loginError='Els PIN no coincideixen.'; render(); return; }
+      var rslug = slugify(rname);
+      if(!rslug){ S.loginError='Escriu un nom vàlid.'; render(); return; }
+      var newData = newStudentData(rname);
+      var finishRegister = function(){
+        S.registry.students[rslug] = {name:rname, pin:rpin};
+        saveRegistry(S.registry);
+        S.slug = rslug; S.student = newData;
+        try { localStorage.setItem("student:"+rslug, JSON.stringify(newData)); } catch(e){}
+        S.loginError=''; S.registerMode=false;
+        goto('dashboard');
+      };
+      if(cloudOn()){
+        toast('Creant el compte...');
+        cloudCall({action:'register', slug:rslug, name:rname, pin:rpin, summary:summaryOf(newData), data:dataForCloud(newData)}).then(function(res){
+          if(!res){ S.loginError='No hi ha connexió amb el servidor. Torna-ho a provar.'; render(); return; }
+          if(!res.ok){ S.loginError='Aquest nom ja té un compte. Inicia sessió.'; render(); return; }
+          finishRegister();
+        });
+        return;
+      }
+      if(S.registry.students[rslug]){ S.loginError='Aquest nom ja té un compte. Inicia sessió.'; render(); return; }
+      finishRegister();
+      saveStudent(rslug, newData);
+      return;
+    }
+
+    if(action==='teacher-login' || action==='teacher-refresh'){
+      var code = (action==='teacher-refresh') ? S.teacherCode : document.getElementById('vtTeacherCode').value.trim();
+      if(cloudOn()){
+        toast('Carregant la classe...');
+        cloudCall({action:'roster', code:code}).then(function(res){
+          if(!res){ S.teacherError='No hi ha connexió amb el servidor.'; if(S.view!=='teacher'){ render(); } else { toast('No hi ha connexió amb el servidor.'); } return; }
+          if(!res.ok){ S.teacherError='Codi incorrecte.'; render(); return; }
+          S.teacherCode = code;
+          S.cloudStudents = {};
+          S.teacherRoster = res.students.map(function(sx){
+            var d = normalizeStudent(sx.data) || newStudentData(sx.name);
+            S.cloudStudents[sx.slug] = d;
+            return rosterEntry(sx.slug, d);
+          });
+          S.teacherError = '';
+          S.view='teacher'; render();
+        });
+        return;
+      }
+      if(code !== TEACHER_CODE){ S.teacherError='Codi incorrecte.'; render(); return; }
+      var slugs = Object.keys(S.registry.students);
+      Promise.all(slugs.map(function(sl){
+        return loadStudent(sl).then(function(d){
+          var data = normalizeStudent(d) || newStudentData(S.registry.students[sl].name);
+          return rosterEntry(sl, data);
+        });
+      })).then(function(roster){
+        S.teacherRoster = roster; S.view='teacher'; render();
+      });
+      return;
+    }
+
+    if(action==='teacher-peek'){
+      stopSpeedTimer(); stopClassifyTimer();
+      var peekSlug = btn.getAttribute('data-slug');
+      var registryEntry = S.registry.students[peekSlug];
+      var openPeek = function(data){
+        S.slug = peekSlug;
+        S.student = normalizeStudent(data) || newStudentData(registryEntry ? registryEntry.name : peekSlug);
+        S.teacherPeekMode = true;
+        S.currentRA = null;
+        S.view = 'dashboard';
+        render();
+      };
+      if(S.cloudStudents && S.cloudStudents[peekSlug]){ openPeek(JSON.parse(JSON.stringify(S.cloudStudents[peekSlug]))); }
+      else { loadStudent(peekSlug).then(openPeek); }
+      return;
+    }
+    if(action==='teacher-peek-exit'){
+      stopSpeedTimer(); stopClassifyTimer();
+      S.teacherPeekMode = false;
+      S.slug = null;
+      S.student = null;
+      S.currentRA = null;
+      S.view = 'teacher';
+      render();
+      return;
+    }
+
+    if(action==='teacher-message'){
+      S.teacherComposeTarget = {slug: btn.getAttribute('data-slug'), name: btn.getAttribute('data-name')};
+      S.view = 'teacherCompose';
+      render();
+      return;
+    }
+    if(action==='teacher-message-cancel'){
+      S.teacherComposeTarget = null;
+      S.view = 'teacher';
+      render();
+      return;
+    }
+    if(action==='msg-template'){
+      var ta = document.getElementById('vtMsgText');
+      if(ta){ ta.value = btn.getAttribute('data-text'); }
+      return;
+    }
+    if(action==='teacher-message-send'){
+      var msgText = document.getElementById('vtMsgText').value.trim();
+      if(!msgText){ toast('Escriu un missatge abans d\'enviar-lo'); return; }
+      var target = S.teacherComposeTarget;
+      if(!target) return;
+      var when = new Date().toLocaleString('ca-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      var msgId = String(Date.now());
+      var msgDone = function(){
+        toast('Missatge enviat a '+target.name);
+        S.teacherComposeTarget = null;
+        S.view = 'teacher';
+        render();
+      };
+      if(cloudOn()){
+        cloudCall({action:'message', code:S.teacherCode, slug:target.slug, id:msgId, date:when, text:msgText}).then(function(res){
+          if(!res || !res.ok){ toast('No s\'ha pogut enviar el missatge. Torna-ho a provar.'); return; }
+          msgDone();
+        });
+        return;
+      }
+      loadStudent(target.slug).then(function(data){
+        data = normalizeStudent(data) || newStudentData(target.name);
+        data.messages.unshift({id:msgId, date:when, text:msgText, read:false});
+        return saveStudent(target.slug, data);
+      }).then(msgDone);
+      return;
+    }
+
+    if(action==='logout'){ stopSpeedTimer(); stopClassifyTimer(); S.slug=null; S.student=null; S.view='login'; S.currentRA=null; S.teacherPeekMode=false; render(); return; }
+    if(action==='go-dashboard'){ goto('dashboard'); return; }
+    if(action==='open-ra'){
+      var raId = btn.getAttribute('data-id');
+      var raObj = raById(raId);
+      if(!raObj || !raObj.active) return;
+      S.currentRA = raId;
+      goto('rahub');
+      return;
+    }
+    if(action==='go-rahub'){ goto('rahub'); return; }
+    if(action==='go-teoria'){ goto('teoria'); return; }
+    if(action==='go-quiz'){ goto('quiz'); return; }
+    if(action==='go-cases'){ goto('cases'); return; }
+    if(action==='go-wordsearch'){ goto('wordsearch'); return; }
+    if(action==='go-speed'){ goto('speed'); return; }
+    if(action==='go-video'){ goto('video'); return; }
+    if(action==='go-memory'){ goto('memory'); return; }
+    if(action==='go-classify'){ goto('classify'); return; }
+    if(action==='go-offer'){ goto('offer'); return; }
+    if(action==='go-escape'){ goto('escape'); return; }
+    if(action==='go-badges'){ goto('badges'); return; }
+    if(action==='go-roulette'){ goto('roulette'); return; }
+    if(action==='go-nomina'){ goto('nomina'); return; }
+    if(action==='go-messages'){ goto('messages'); return; }
+    if(action==='msg-read'){
+      var midx = parseInt(btn.getAttribute('data-idx'),10);
+      if(S.student.messages[midx]){ S.student.messages[midx].read = true; persistStudent(); }
+      render();
+      return;
+    }
+
+    if(action==='teoria-toggle'){
+      var tid = btn.getAttribute('data-id');
+      if(!S.teoriaOpen) S.teoriaOpen = {};
+      S.teoriaOpen[tid] = !S.teoriaOpen[tid];
+      render(); return;
+    }
+    if(action==='act-toggle'){
+      var aid = btn.getAttribute('data-id');
+      if(!S.actOpen) S.actOpen = {};
+      S.actOpen[aid] = !S.actOpen[aid];
+      render(); return;
+    }
+
+    if(action==='quiz-answer'){
+      var qi = parseInt(btn.getAttribute('data-idx'),10);
+      S.quiz.answered = true; S.quiz.selected = qi;
+      var q = QUIZ[S.quiz.index];
+      var qOk = (qi===q.correct);
+      recordStreak(qOk);
+      if(qOk && S.student.quiz.correctIds.indexOf(S.quiz.index)===-1){
+        S.student.quiz.correctIds.push(S.quiz.index);
+        pay(15, "Test ràpid: pregunta "+(S.quiz.index+1)+" encertada");
+      } else { persistStudent(); }
+      render(); return;
+    }
+    if(action==='quiz-next'){ S.quiz.index++; S.quiz.answered=false; S.quiz.selected=null; render(); return; }
+    if(action==='quiz-restart'){ S.quiz = {index:0, answered:false, selected:null}; render(); return; }
+
+    if(action==='case-answer'){
+      var ci = parseInt(btn.getAttribute('data-idx'),10);
+      S.cases.answered = true; S.cases.selected = ci;
+      var c = CASES[S.cases.index];
+      var cOk = (ci===c.correct);
+      recordStreak(cOk);
+      if(cOk && S.student.cases.correctIds.indexOf(S.cases.index)===-1){
+        S.student.cases.correctIds.push(S.cases.index);
+        pay(25, "Cas pràctic "+(S.cases.index+1)+" resolt correctament");
+      } else { persistStudent(); }
+      render(); return;
+    }
+    if(action==='case-next'){ S.cases.index++; S.cases.answered=false; S.cases.selected=null; render(); return; }
+    if(action==='cases-restart'){ S.cases = {index:0, answered:false, selected:null}; render(); return; }
+
+    if(action==='picto-answer'){
+      var pi = parseInt(btn.getAttribute('data-idx'),10);
+      S.pictoQuiz.answered = true; S.pictoQuiz.selected = pi;
+      var pq = PICTO_QUIZ[S.pictoQuiz.index];
+      var pOk = (pi===pq.correct);
+      recordStreak(pOk);
+      if(pOk && S.student.pictoQuiz.correctIds.indexOf(S.pictoQuiz.index)===-1){
+        S.student.pictoQuiz.correctIds.push(S.pictoQuiz.index);
+        pay(20, "Vídeo pictogrames: pregunta "+(S.pictoQuiz.index+1)+" encertada");
+      } else { persistStudent(); }
+      render(); return;
+    }
+    if(action==='picto-next'){ S.pictoQuiz.index++; S.pictoQuiz.answered=false; S.pictoQuiz.selected=null; render(); return; }
+    if(action==='picto-restart'){ S.pictoQuiz = {index:0, answered:false, selected:null}; render(); return; }
+
+    if(action==='ws-restart'){ S.wsGame = buildWordSearch(); render(); return; }
+    if(action==='ws-cell'){
+      var row = parseInt(btn.getAttribute('data-row'),10);
+      var col = parseInt(btn.getAttribute('data-col'),10);
+      var g = S.wsGame;
+      if(!g.selStart){ g.selStart = {row:row,col:col}; render(); return; }
+      var cells = pathCells(g.selStart, {row:row,col:col});
+      if(cells){
+        var letters = cells.map(function(c){ return g.grid[c.row][c.col]; }).join("");
+        var rev = letters.split("").reverse().join("");
+        var match = g.placements.find(function(p){
+          return (p.word===letters || p.word===rev) && !g.found.some(function(f){ return f.word===p.word; });
+        });
+        if(match){ g.found.push({word:match.word, cells:cells}); }
+      }
+      g.selStart = null;
+      if(g.found.length===WS_WORDS.length){
+        if(!S.student.wordsearch.done){
+          S.student.wordsearch.done = true;
+          pay(100, "Sopa de lletres completada");
+        }
+        if(!S.student.wordsearch.fastDone && (Date.now()-g.startTime) <= 60000){
+          S.student.wordsearch.fastDone = true;
+          pay(30, "Sopa de lletres en menys d'un minut");
+        }
+      }
+      render(); return;
+    }
+
+    if(action==='speed-start'){
+      stopSpeedTimer();
+      S.speedGame = {phase:'running', timeLeft:30, order:shuffle(TF), idx:0, correct:0, wrong:0, intervalId:null};
+      S.speedGame.intervalId = setInterval(function(){
+        S.speedGame.timeLeft--;
+        if(S.speedGame.timeLeft<=0){
+          stopSpeedTimer();
+          S.speedGame.phase='done';
+          if(S.speedGame.correct > S.student.speed.best){
+            S.student.speed.best = S.speedGame.correct;
+            persistStudent();
+          }
+        }
+        render();
+      }, 1000);
+      render(); return;
+    }
+    if(action==='speed-answer'){
+      var g2 = S.speedGame;
+      if(!g2 || g2.phase!=='running') return;
+      var val = btn.getAttribute('data-val')==='true';
+      var item = g2.order[g2.idx % g2.order.length];
+      var speedOk = (val===item.a);
+      recordStreak(speedOk);
+      if(speedOk){ g2.correct++; pay(8, "Repte contra rellotge: resposta correcta"); }
+      else { g2.wrong++; persistStudent(); }
+      g2.idx++;
+      render(); return;
+    }
+
+    /* ---- Aparella conceptes (memory) ---- */
+    if(action==='memory-restart'){ S.memoryGame = buildMemoryGame(); render(); return; }
+    if(action==='memory-cell'){
+      var g3 = S.memoryGame;
+      if(!g3 || g3.busy) return;
+      var midx2 = parseInt(btn.getAttribute('data-idx'),10);
+      if(g3.flipped.indexOf(midx2)!==-1) return;
+      if(g3.matched.indexOf(g3.cards[midx2].pairId)!==-1) return;
+      g3.flipped.push(midx2);
+      if(g3.flipped.length===2){
+        var a = g3.cards[g3.flipped[0]], b = g3.cards[g3.flipped[1]];
+        if(a.pairId===b.pairId && a.type!==b.type){
+          g3.matched.push(a.pairId);
+          g3.flipped = [];
+          if(g3.matched.length===MEMORY_PAIRS.length && !S.student.memory.done){
+            S.student.memory.done = true;
+            pay(80, "Aparella conceptes completat");
+          }
+        } else {
+          g3.busy = true;
+          setTimeout(function(){ g3.flipped=[]; g3.busy=false; render(); }, 900);
+        }
+      }
+      render(); return;
+    }
+
+    /* ---- Classifica contra rellotge ---- */
+    if(action==='classify-start'){
+      stopClassifyTimer();
+      S.classifyGame = {phase:'running', timeLeft:30, order:shuffle(CLASSIFY), idx:0, correct:0, wrong:0, intervalId:null};
+      S.classifyGame.intervalId = setInterval(function(){
+        S.classifyGame.timeLeft--;
+        if(S.classifyGame.timeLeft<=0){
+          stopClassifyTimer();
+          S.classifyGame.phase='done';
+          if(S.classifyGame.correct > S.student.classify.best){
+            S.student.classify.best = S.classifyGame.correct;
+            persistStudent();
+          }
+        }
+        render();
+      }, 1000);
+      render(); return;
+    }
+    if(action==='classify-answer'){
+      var g4 = S.classifyGame;
+      if(!g4 || g4.phase!=='running') return;
+      var cidx = parseInt(btn.getAttribute('data-idx'),10);
+      var citem = g4.order[g4.idx % g4.order.length];
+      var classifyOk = (cidx===citem.correct);
+      recordStreak(classifyOk);
+      if(classifyOk){ g4.correct++; pay(10, "Classifica contra rellotge: resposta correcta"); }
+      else { g4.wrong++; persistStudent(); }
+      g4.idx++;
+      render(); return;
+    }
+
+    /* ---- Construeix la teva oferta ---- */
+    if(action==='offer-restart'){ S.offerGame = {index:0, selected:{}}; render(); return; }
+    if(action==='offer-toggle'){
+      if(S.offerGame.checked) return;
+      var oidx = parseInt(btn.getAttribute('data-idx'),10);
+      if(!S.offerGame.selected) S.offerGame.selected = {};
+      S.offerGame.selected[oidx] = !S.offerGame.selected[oidx];
+      render(); return;
+    }
+    if(action==='offer-check'){
+      var sc = OFFER_SCENARIOS[S.offerGame.index];
+      var sel = S.offerGame.selected || {};
+      var hits = 0, misses = 0;
+      sc.cards.forEach(function(c, i){
+        var isSel = !!sel[i];
+        if(c.fit && isSel) hits++;
+        if(!c.fit && isSel) misses++;
+      });
+      var net = Math.max(0, hits-misses);
+      S.offerGame.checked = true;
+      if(net>0 && S.student.offerGame.doneScenarios.indexOf(S.offerGame.index)===-1){
+        S.student.offerGame.doneScenarios.push(S.offerGame.index);
+        pay(net*15, "Oferta per al client "+(S.offerGame.index+1)+": "+hits+" encerts");
+      } else {
+        persistStudent();
+      }
+      render(); return;
+    }
+    if(action==='offer-next'){ S.offerGame.index++; S.offerGame.selected={}; S.offerGame.checked=false; render(); return; }
+
+    /* ---- Escape room ---- */
+    if(action==='escape-claim'){
+      var stE = S.student;
+      var allDone = (stE.quiz.correctIds.length===QUIZ.length) && (stE.cases.correctIds.length===CASES.length)
+        && stE.wordsearch.done && (stE.pictoQuiz.correctIds.length===PICTO_QUIZ.length) && stE.memory.done;
+      if(allDone && !stE.escapeClaimed){
+        stE.escapeClaimed = true;
+        pay(150, "Recompensa final de l'escape room de RA1");
+      }
+      render(); return;
+    }
+
+    /* ---- Ruleta diària ---- */
+    if(action==='roulette-spin'){
+      if(S.student.roulette.lastDate === todayStr()) return;
+      S.rouletteGame = {spinning:true, question:null, answered:false};
+      render();
+      setTimeout(function(){
+        S.rouletteGame.spinning = false;
+        S.rouletteGame.question = shuffle(TF)[0];
+        render();
+      }, 1150);
+      return;
+    }
+    if(action==='roulette-answer'){
+      var g5 = S.rouletteGame;
+      if(!g5 || !g5.question || g5.answered) return;
+      var rval = btn.getAttribute('data-val')==='true';
+      var rOk = (rval===g5.question.a);
+      recordStreak(rOk);
+      S.student.roulette.lastDate = todayStr();
+      g5.answered = true;
+      g5.wasCorrect = rOk;
+      if(rOk){
+        g5.won = Math.floor(Math.random()*16)+10;
+        pay(g5.won, "Ruleta diària: resposta correcta");
+      } else {
+        persistStudent();
+      }
+      render(); return;
+    }
+  }
+
+  document.getElementById('vtApp').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-action]');
+    if(!btn) return;
+    handleAction(btn.getAttribute('data-action'), btn);
+  });
+
+  loadRegistry().then(function(reg){
+    S.registry = reg;
+    S.view = 'login';
+    render();
+  });
+})();
+</script>
